@@ -316,6 +316,6 @@ int main() {
     // CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
 
     // std::printf("GEMM completed in %.3f ms\n", milliseconds);
-    std::cout << "nvfp6 gemm finished." << std::endl;
+    std::cout << "mxfp6 gemm finished." << std::endl;
     return 0;
 }

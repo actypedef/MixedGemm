@@ -58,12 +58,12 @@ using namespace cute;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 // A matrix configuration
-using         ElementA    = cutlass::nv_float4_t<cutlass::float_e2m1_t>;    // Element type for A matrix operand
+using         ElementA    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for A matrix operand
 using         LayoutATag  = cutlass::layout::RowMajor;                      // Layout type for A matrix operand
 constexpr int AlignmentA  = 32;                                             // Memory access granularity/alignment of A matrix in units of elements (up to 16 bytes)
 
 // B matrix configuration
-using         ElementB    = cutlass::nv_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
+using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
 using         LayoutBTag  = cutlass::layout::ColumnMajor;                   // Layout type for B matrix operand
 constexpr int AlignmentB  = 32;                                             // Memory access granularity/alignment of B matrix in units of elements (up to 16 bytes)
 
@@ -235,7 +235,7 @@ int main() {
     const int M = 1024;
     const int N = 4096;
     const int K = 2560;
-    const int block_size = 16;  // NVFP4 的缩放通常是 per-block 的，16 是常见值
+    const int block_size = 32;  // NVFP4 的缩放通常是 per-block 的，16 是常见值
     
     // 创建并初始化 nvfp4 矩阵（按行主序）
     ElementA::DataType *A;
@@ -316,6 +316,6 @@ int main() {
     // CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
 
     // std::printf("GEMM completed in %.3f ms\n", milliseconds);
-    std::cout << "nvfp4 gemm finished." << std::endl;
+    std::cout << "mxfp4 gemm finished." << std::endl;
     return 0;
 }
