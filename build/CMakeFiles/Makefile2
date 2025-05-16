@@ -87,12 +87,12 @@ clean: CMakeFiles/bench_gemm.dir/clean
 CMakeFiles/bench_fp4.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=1,2 "Built target bench_fp4"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=1,2,3 "Built target bench_fp4"
 .PHONY : CMakeFiles/bench_fp4.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/bench_fp4.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/bench_fp4.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 0
 .PHONY : CMakeFiles/bench_fp4.dir/rule
@@ -113,12 +113,12 @@ CMakeFiles/bench_fp4.dir/clean:
 CMakeFiles/bench_fp6.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=3,4 "Built target bench_fp6"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=4,5,6 "Built target bench_fp6"
 .PHONY : CMakeFiles/bench_fp6.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/bench_fp6.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/bench_fp6.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 0
 .PHONY : CMakeFiles/bench_fp6.dir/rule
@@ -139,12 +139,12 @@ CMakeFiles/bench_fp6.dir/clean:
 CMakeFiles/bench_fp8.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=5,6 "Built target bench_fp8"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=7,8,9 "Built target bench_fp8"
 .PHONY : CMakeFiles/bench_fp8.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/bench_fp8.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/bench_fp8.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 0
 .PHONY : CMakeFiles/bench_fp8.dir/rule
@@ -165,12 +165,12 @@ CMakeFiles/bench_fp8.dir/clean:
 CMakeFiles/bench_gemm.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=7,8 "Built target bench_gemm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=10,11,12,13,14,15 "Built target bench_gemm"
 .PHONY : CMakeFiles/bench_gemm.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/bench_gemm.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/bench_gemm.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /root/autodl-tmp/MixedGemm/build/CMakeFiles 0
 .PHONY : CMakeFiles/bench_gemm.dir/rule

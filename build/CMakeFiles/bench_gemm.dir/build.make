@@ -69,10 +69,24 @@ include CMakeFiles/bench_gemm.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/bench_gemm.dir/flags.make
 
+CMakeFiles/bench_gemm.dir/bench_gemm.cu.o: CMakeFiles/bench_gemm.dir/flags.make
+CMakeFiles/bench_gemm.dir/bench_gemm.cu.o: /root/autodl-tmp/MixedGemm/bench_gemm.cu
+CMakeFiles/bench_gemm.dir/bench_gemm.cu.o: CMakeFiles/bench_gemm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CUDA object CMakeFiles/bench_gemm.dir/bench_gemm.cu.o"
+	/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/bench_gemm.dir/bench_gemm.cu.o -MF CMakeFiles/bench_gemm.dir/bench_gemm.cu.o.d -x cu -c /root/autodl-tmp/MixedGemm/bench_gemm.cu -o CMakeFiles/bench_gemm.dir/bench_gemm.cu.o
+
+CMakeFiles/bench_gemm.dir/bench_gemm.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/bench_gemm.dir/bench_gemm.cu.i"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
+
+CMakeFiles/bench_gemm.dir/bench_gemm.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/bench_gemm.dir/bench_gemm.cu.s"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
+
 CMakeFiles/bench_gemm.dir/gemm.cu.o: CMakeFiles/bench_gemm.dir/flags.make
 CMakeFiles/bench_gemm.dir/gemm.cu.o: /root/autodl-tmp/MixedGemm/gemm.cu
 CMakeFiles/bench_gemm.dir/gemm.cu.o: CMakeFiles/bench_gemm.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CUDA object CMakeFiles/bench_gemm.dir/gemm.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CUDA object CMakeFiles/bench_gemm.dir/gemm.cu.o"
 	/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/bench_gemm.dir/gemm.cu.o -MF CMakeFiles/bench_gemm.dir/gemm.cu.o.d -x cu -c /root/autodl-tmp/MixedGemm/gemm.cu -o CMakeFiles/bench_gemm.dir/gemm.cu.o
 
 CMakeFiles/bench_gemm.dir/gemm.cu.i: cmake_force
@@ -83,17 +97,67 @@ CMakeFiles/bench_gemm.dir/gemm.cu.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/bench_gemm.dir/gemm.cu.s"
 	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
 
+CMakeFiles/bench_gemm.dir/fp4.cu.o: CMakeFiles/bench_gemm.dir/flags.make
+CMakeFiles/bench_gemm.dir/fp4.cu.o: /root/autodl-tmp/MixedGemm/fp4.cu
+CMakeFiles/bench_gemm.dir/fp4.cu.o: CMakeFiles/bench_gemm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CUDA object CMakeFiles/bench_gemm.dir/fp4.cu.o"
+	/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/bench_gemm.dir/fp4.cu.o -MF CMakeFiles/bench_gemm.dir/fp4.cu.o.d -x cu -c /root/autodl-tmp/MixedGemm/fp4.cu -o CMakeFiles/bench_gemm.dir/fp4.cu.o
+
+CMakeFiles/bench_gemm.dir/fp4.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/bench_gemm.dir/fp4.cu.i"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
+
+CMakeFiles/bench_gemm.dir/fp4.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/bench_gemm.dir/fp4.cu.s"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
+
+CMakeFiles/bench_gemm.dir/fp6.cu.o: CMakeFiles/bench_gemm.dir/flags.make
+CMakeFiles/bench_gemm.dir/fp6.cu.o: /root/autodl-tmp/MixedGemm/fp6.cu
+CMakeFiles/bench_gemm.dir/fp6.cu.o: CMakeFiles/bench_gemm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CUDA object CMakeFiles/bench_gemm.dir/fp6.cu.o"
+	/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/bench_gemm.dir/fp6.cu.o -MF CMakeFiles/bench_gemm.dir/fp6.cu.o.d -x cu -c /root/autodl-tmp/MixedGemm/fp6.cu -o CMakeFiles/bench_gemm.dir/fp6.cu.o
+
+CMakeFiles/bench_gemm.dir/fp6.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/bench_gemm.dir/fp6.cu.i"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
+
+CMakeFiles/bench_gemm.dir/fp6.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/bench_gemm.dir/fp6.cu.s"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
+
+CMakeFiles/bench_gemm.dir/fp8.cu.o: CMakeFiles/bench_gemm.dir/flags.make
+CMakeFiles/bench_gemm.dir/fp8.cu.o: /root/autodl-tmp/MixedGemm/fp8.cu
+CMakeFiles/bench_gemm.dir/fp8.cu.o: CMakeFiles/bench_gemm.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CUDA object CMakeFiles/bench_gemm.dir/fp8.cu.o"
+	/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -MD -MT CMakeFiles/bench_gemm.dir/fp8.cu.o -MF CMakeFiles/bench_gemm.dir/fp8.cu.o.d -x cu -c /root/autodl-tmp/MixedGemm/fp8.cu -o CMakeFiles/bench_gemm.dir/fp8.cu.o
+
+CMakeFiles/bench_gemm.dir/fp8.cu.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/bench_gemm.dir/fp8.cu.i"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_PREPROCESSED_SOURCE
+
+CMakeFiles/bench_gemm.dir/fp8.cu.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CUDA source to assembly CMakeFiles/bench_gemm.dir/fp8.cu.s"
+	$(CMAKE_COMMAND) -E cmake_unimplemented_variable CMAKE_CUDA_CREATE_ASSEMBLY_SOURCE
+
 # Object files for target bench_gemm
 bench_gemm_OBJECTS = \
-"CMakeFiles/bench_gemm.dir/gemm.cu.o"
+"CMakeFiles/bench_gemm.dir/bench_gemm.cu.o" \
+"CMakeFiles/bench_gemm.dir/gemm.cu.o" \
+"CMakeFiles/bench_gemm.dir/fp4.cu.o" \
+"CMakeFiles/bench_gemm.dir/fp6.cu.o" \
+"CMakeFiles/bench_gemm.dir/fp8.cu.o"
 
 # External object files for target bench_gemm
 bench_gemm_EXTERNAL_OBJECTS =
 
+bench_gemm: CMakeFiles/bench_gemm.dir/bench_gemm.cu.o
 bench_gemm: CMakeFiles/bench_gemm.dir/gemm.cu.o
+bench_gemm: CMakeFiles/bench_gemm.dir/fp4.cu.o
+bench_gemm: CMakeFiles/bench_gemm.dir/fp6.cu.o
+bench_gemm: CMakeFiles/bench_gemm.dir/fp8.cu.o
 bench_gemm: CMakeFiles/bench_gemm.dir/build.make
 bench_gemm: CMakeFiles/bench_gemm.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CUDA executable bench_gemm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/autodl-tmp/MixedGemm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CUDA executable bench_gemm"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/bench_gemm.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

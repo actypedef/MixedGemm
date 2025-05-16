@@ -168,12 +168,109 @@ bench_gemm/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/build
 .PHONY : bench_gemm/fast
 
+bench_fp4.o: bench_fp4.cu.o
+.PHONY : bench_fp4.o
+
+# target to build an object file
+bench_fp4.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/bench_fp4.cu.o
+.PHONY : bench_fp4.cu.o
+
+bench_fp4.i: bench_fp4.cu.i
+.PHONY : bench_fp4.i
+
+# target to preprocess a source file
+bench_fp4.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/bench_fp4.cu.i
+.PHONY : bench_fp4.cu.i
+
+bench_fp4.s: bench_fp4.cu.s
+.PHONY : bench_fp4.s
+
+# target to generate assembly for a file
+bench_fp4.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/bench_fp4.cu.s
+.PHONY : bench_fp4.cu.s
+
+bench_fp6.o: bench_fp6.cu.o
+.PHONY : bench_fp6.o
+
+# target to build an object file
+bench_fp6.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/bench_fp6.cu.o
+.PHONY : bench_fp6.cu.o
+
+bench_fp6.i: bench_fp6.cu.i
+.PHONY : bench_fp6.i
+
+# target to preprocess a source file
+bench_fp6.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/bench_fp6.cu.i
+.PHONY : bench_fp6.cu.i
+
+bench_fp6.s: bench_fp6.cu.s
+.PHONY : bench_fp6.s
+
+# target to generate assembly for a file
+bench_fp6.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/bench_fp6.cu.s
+.PHONY : bench_fp6.cu.s
+
+bench_fp8.o: bench_fp8.cu.o
+.PHONY : bench_fp8.o
+
+# target to build an object file
+bench_fp8.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/bench_fp8.cu.o
+.PHONY : bench_fp8.cu.o
+
+bench_fp8.i: bench_fp8.cu.i
+.PHONY : bench_fp8.i
+
+# target to preprocess a source file
+bench_fp8.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/bench_fp8.cu.i
+.PHONY : bench_fp8.cu.i
+
+bench_fp8.s: bench_fp8.cu.s
+.PHONY : bench_fp8.s
+
+# target to generate assembly for a file
+bench_fp8.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/bench_fp8.cu.s
+.PHONY : bench_fp8.cu.s
+
+bench_gemm.o: bench_gemm.cu.o
+.PHONY : bench_gemm.o
+
+# target to build an object file
+bench_gemm.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/bench_gemm.cu.o
+.PHONY : bench_gemm.cu.o
+
+bench_gemm.i: bench_gemm.cu.i
+.PHONY : bench_gemm.i
+
+# target to preprocess a source file
+bench_gemm.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/bench_gemm.cu.i
+.PHONY : bench_gemm.cu.i
+
+bench_gemm.s: bench_gemm.cu.s
+.PHONY : bench_gemm.s
+
+# target to generate assembly for a file
+bench_gemm.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/bench_gemm.cu.s
+.PHONY : bench_gemm.cu.s
+
 fp4.o: fp4.cu.o
 .PHONY : fp4.o
 
 # target to build an object file
 fp4.cu.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/fp4.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp4.cu.o
 .PHONY : fp4.cu.o
 
 fp4.i: fp4.cu.i
@@ -182,6 +279,7 @@ fp4.i: fp4.cu.i
 # target to preprocess a source file
 fp4.cu.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/fp4.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp4.cu.i
 .PHONY : fp4.cu.i
 
 fp4.s: fp4.cu.s
@@ -190,6 +288,7 @@ fp4.s: fp4.cu.s
 # target to generate assembly for a file
 fp4.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp4.dir/build.make CMakeFiles/bench_fp4.dir/fp4.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp4.cu.s
 .PHONY : fp4.cu.s
 
 fp6.o: fp6.cu.o
@@ -198,6 +297,7 @@ fp6.o: fp6.cu.o
 # target to build an object file
 fp6.cu.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/fp6.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp6.cu.o
 .PHONY : fp6.cu.o
 
 fp6.i: fp6.cu.i
@@ -206,6 +306,7 @@ fp6.i: fp6.cu.i
 # target to preprocess a source file
 fp6.cu.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/fp6.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp6.cu.i
 .PHONY : fp6.cu.i
 
 fp6.s: fp6.cu.s
@@ -214,6 +315,7 @@ fp6.s: fp6.cu.s
 # target to generate assembly for a file
 fp6.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp6.dir/build.make CMakeFiles/bench_fp6.dir/fp6.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp6.cu.s
 .PHONY : fp6.cu.s
 
 fp8.o: fp8.cu.o
@@ -222,6 +324,7 @@ fp8.o: fp8.cu.o
 # target to build an object file
 fp8.cu.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/fp8.cu.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp8.cu.o
 .PHONY : fp8.cu.o
 
 fp8.i: fp8.cu.i
@@ -230,6 +333,7 @@ fp8.i: fp8.cu.i
 # target to preprocess a source file
 fp8.cu.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/fp8.cu.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp8.cu.i
 .PHONY : fp8.cu.i
 
 fp8.s: fp8.cu.s
@@ -238,6 +342,7 @@ fp8.s: fp8.cu.s
 # target to generate assembly for a file
 fp8.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_fp8.dir/build.make CMakeFiles/bench_fp8.dir/fp8.cu.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bench_gemm.dir/build.make CMakeFiles/bench_gemm.dir/fp8.cu.s
 .PHONY : fp8.cu.s
 
 gemm.o: gemm.cu.o
@@ -276,6 +381,18 @@ help:
 	@echo "... bench_fp6"
 	@echo "... bench_fp8"
 	@echo "... bench_gemm"
+	@echo "... bench_fp4.o"
+	@echo "... bench_fp4.i"
+	@echo "... bench_fp4.s"
+	@echo "... bench_fp6.o"
+	@echo "... bench_fp6.i"
+	@echo "... bench_fp6.s"
+	@echo "... bench_fp8.o"
+	@echo "... bench_fp8.i"
+	@echo "... bench_fp8.s"
+	@echo "... bench_gemm.o"
+	@echo "... bench_gemm.i"
+	@echo "... bench_gemm.s"
 	@echo "... fp4.o"
 	@echo "... fp4.i"
 	@echo "... fp4.s"

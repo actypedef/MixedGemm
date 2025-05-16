@@ -1,12 +1,19 @@
-[ 12%] Building CUDA object CMakeFiles/bench_fp4.dir/fp4.cu.o
-[ 25%] Linking CUDA executable bench_fp4
-[ 25%] Built target bench_fp4
-[ 37%] Building CUDA object CMakeFiles/bench_fp6.dir/fp6.cu.o
-[ 50%] Linking CUDA executable bench_fp6
-[ 50%] Built target bench_fp6
-[ 62%] Building CUDA object CMakeFiles/bench_fp8.dir/fp8.cu.o
-[ 75%] Linking CUDA executable bench_fp8
-[ 75%] Built target bench_fp8
-[ 87%] Building CUDA object CMakeFiles/bench_gemm.dir/gemm.cu.o
+[  6%] Building CUDA object CMakeFiles/bench_fp4.dir/bench_fp4.cu.o
+[ 13%] Building CUDA object CMakeFiles/bench_fp4.dir/fp4.cu.o
+[ 20%] Linking CUDA executable bench_fp4
+[ 20%] Built target bench_fp4
+[ 26%] Building CUDA object CMakeFiles/bench_fp6.dir/bench_fp6.cu.o
+[ 33%] Building CUDA object CMakeFiles/bench_fp6.dir/fp6.cu.o
+[ 40%] Linking CUDA executable bench_fp6
+[ 40%] Built target bench_fp6
+[ 46%] Building CUDA object CMakeFiles/bench_fp8.dir/bench_fp8.cu.o
+[ 53%] Building CUDA object CMakeFiles/bench_fp8.dir/fp8.cu.o
+[ 60%] Linking CUDA executable bench_fp8
+[ 60%] Built target bench_fp8
+[ 66%] Building CUDA object CMakeFiles/bench_gemm.dir/bench_gemm.cu.o
+[ 73%] Building CUDA object CMakeFiles/bench_gemm.dir/gemm.cu.o
+[ 80%] Building CUDA object CMakeFiles/bench_gemm.dir/fp4.cu.o
+[ 86%] Building CUDA object CMakeFiles/bench_gemm.dir/fp6.cu.o
+[ 93%] Building CUDA object CMakeFiles/bench_gemm.dir/fp8.cu.o
 [100%] Linking CUDA executable bench_gemm
 [100%] Built target bench_gemm

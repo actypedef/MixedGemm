@@ -4,7 +4,7 @@
 # compile CUDA with /usr/local/cuda/bin/nvcc
 CUDA_DEFINES = -DCUTLASS_ARCH_SM120_SUPPORTED
 
-CUDA_INCLUDES = -I/root/autodl-tmp/cutlass/include -I/root/autodl-tmp/cutlass/tools/util/include -I/root/autodl-tmp/cutlass/examples/common
+CUDA_INCLUDES = -I/root/autodl-tmp/MixedGemm/. -I/root/autodl-tmp/cutlass/include -I/root/autodl-tmp/cutlass/tools/util/include -I/root/autodl-tmp/cutlass/examples/common
 
 CUDA_FLAGS =  --generate-code=arch=compute_120a,code=[compute_120a,sm_120a] --expt-relaxed-constexpr -std=c++17
 

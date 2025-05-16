@@ -1,4 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/bench_gemm.dir/bench_gemm.cu.o"
+  "CMakeFiles/bench_gemm.dir/bench_gemm.cu.o.d"
+  "CMakeFiles/bench_gemm.dir/fp4.cu.o"
+  "CMakeFiles/bench_gemm.dir/fp4.cu.o.d"
+  "CMakeFiles/bench_gemm.dir/fp6.cu.o"
+  "CMakeFiles/bench_gemm.dir/fp6.cu.o.d"
+  "CMakeFiles/bench_gemm.dir/fp8.cu.o"
+  "CMakeFiles/bench_gemm.dir/fp8.cu.o.d"
   "CMakeFiles/bench_gemm.dir/gemm.cu.o"
   "CMakeFiles/bench_gemm.dir/gemm.cu.o.d"
   "bench_gemm"

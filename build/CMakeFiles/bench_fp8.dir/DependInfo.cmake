@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/root/autodl-tmp/MixedGemm/bench_fp8.cu" "CMakeFiles/bench_fp8.dir/bench_fp8.cu.o" "gcc" "CMakeFiles/bench_fp8.dir/bench_fp8.cu.o.d"
   "/root/autodl-tmp/MixedGemm/fp8.cu" "CMakeFiles/bench_fp8.dir/fp8.cu.o" "gcc" "CMakeFiles/bench_fp8.dir/fp8.cu.o.d"
   )
 

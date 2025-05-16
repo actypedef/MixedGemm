@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/bench_fp4.dir/bench_fp4.cu.o"
+  "CMakeFiles/bench_fp4.dir/bench_fp4.cu.o.d"
   "CMakeFiles/bench_fp4.dir/fp4.cu.o"
   "CMakeFiles/bench_fp4.dir/fp4.cu.o.d"
   "bench_fp4"

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/bench_fp8.dir/bench_fp8.cu.o"
+  "CMakeFiles/bench_fp8.dir/bench_fp8.cu.o.d"
   "CMakeFiles/bench_fp8.dir/fp8.cu.o"
   "CMakeFiles/bench_fp8.dir/fp8.cu.o.d"
   "bench_fp8"

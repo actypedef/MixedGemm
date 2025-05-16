@@ -1,1 +1,1 @@
-/usr/bin/g++ CMakeFiles/bench_gemm.dir/gemm.cu.o -o bench_gemm  -lcudadevrt -lcudart_static -lrt -lpthread -ldl  -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib"
+/usr/bin/g++ CMakeFiles/bench_gemm.dir/bench_gemm.cu.o CMakeFiles/bench_gemm.dir/gemm.cu.o CMakeFiles/bench_gemm.dir/fp4.cu.o CMakeFiles/bench_gemm.dir/fp6.cu.o CMakeFiles/bench_gemm.dir/fp8.cu.o -o bench_gemm  -lcudadevrt -lcudart_static -lrt -lpthread -ldl  -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib"
