@@ -1,0 +1,12 @@
+[ 12%] Building CUDA object CMakeFiles/bench_fp4.dir/fp4.cu.o
+[ 25%] Linking CUDA executable bench_fp4
+[ 25%] Built target bench_fp4
+[ 37%] Building CUDA object CMakeFiles/bench_fp6.dir/fp6.cu.o
+[ 50%] Linking CUDA executable bench_fp6
+[ 50%] Built target bench_fp6
+[ 62%] Building CUDA object CMakeFiles/bench_fp8.dir/fp8.cu.o
+[ 75%] Linking CUDA executable bench_fp8
+[ 75%] Built target bench_fp8
+[ 87%] Building CUDA object CMakeFiles/bench_gemm.dir/gemm.cu.o
+[100%] Linking CUDA executable bench_gemm
+[100%] Built target bench_gemm
