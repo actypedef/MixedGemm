@@ -17,13 +17,11 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 
 int main() {
-    // 假设我们创建一个 M x K 的矩阵
     const int M = 1024;
     const int N = 4096;
     const int K = 2560;
-    const int block_size = 32;  // NVFP4 的缩放通常是 per-block 的，16 是常见值
+    const int block_size = 32;
     
-    // 创建并初始化 nvfp4 矩阵（按行主序）
     ElementA::DataType *A;
     ElementB::DataType *B;
     ElementC *C;
@@ -40,7 +38,6 @@ int main() {
     ElementB::ScaleFactorType *scaleB = new ElementB::ScaleFactorType[((N * K + block_size - 1) / block_size)];
     
 
-    // 随机初始化（这里我们模拟 float -> nvfp4 的量化过程）
     std::srand(static_cast<unsigned int>(std::time(0)));
     cutlass::NumericConverter<ElementA::DataType, float, cutlass::FloatRoundStyle::round_to_nearest> converterA;
     cutlass::NumericConverter<ElementB::DataType, float, cutlass::FloatRoundStyle::round_to_nearest> converterB;
@@ -81,27 +78,51 @@ int main() {
     for (size_t i = 0; i < szB; ++i) {
         scaleB[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
     }
+    ElementA::DataType *A_d;
+    ElementB::DataType *B_d;
+    ElementC *C_d;
+    ElementD *D_d;    
+    ElementA::ScaleFactorType *SFA_d;
+    ElementB::ScaleFactorType *SFB_d;
+
+    cudaMalloc((void**)&A_d, M * K * sizeof(ElementA::DataType));
+    cudaMalloc((void**)&B_d, N * K * sizeof(ElementB::DataType));
+    cudaMalloc((void**)&C_d, M * N * sizeof(ElementC));
+    cudaMalloc((void**)&D_d, M * N * sizeof(ElementD));
+    cudaMalloc((void**)&SFA_d, szA * sizeof(ElementA::ScaleFactorType));
+    cudaMalloc((void**)&SFB_d, szB * sizeof(ElementB::ScaleFactorType));
+    cudaMemcpy(A_d, A, M * K * sizeof(ElementA::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(B_d, B, N * K * sizeof(ElementB::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(C_d, C, M * N * sizeof(ElementC), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFA_d, scaleA, szA * sizeof(ElementA::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFB_d, scaleB, szB * sizeof(ElementB::ScaleFactorType), cudaMemcpyHostToDevice);
+    
     
     // Timing using CUDA events
-    // cudaEvent_t start, stop;
-    // CHECK_CUDA(cudaEventCreate(&start));
-    // CHECK_CUDA(cudaEventCreate(&stop));
-    // CHECK_CUDA(cudaEventRecord(start));
-    float ms = 0;
+    cudaEvent_t start, stop;
+    CHECK_CUDA(cudaEventCreate(&start));
+    CHECK_CUDA(cudaEventCreate(&stop));
+    
     for (int it = 0; it < 200; it ++) {
-        float t = matmul_host4(A, B, M, N, K, C, D, scaleA, scaleB);
+        matmul_host4(A_d, B_d, M, N, K, C_d, D_d, SFA_d, SFB_d);
     }
+    CHECK_CUDA(cudaEventRecord(start));
     for (int it = 0; it < 400; it ++) {
-        float t = matmul_host4(A, B, M, N, K, C, D, scaleA, scaleB);
-        ms += t;
+        matmul_host4(A_d, B_d, M, N, K, C_d, D_d, SFA_d, SFB_d);
     }
-    std::printf("GEMM completed in %.3f ms\n", ms / 400);
-    // CHECK_CUDA(cudaEventRecord(stop));
-    // CHECK_CUDA(cudaEventSynchronize(stop));
-    // float milliseconds = 0;
-    // CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
+    CHECK_CUDA(cudaEventRecord(stop));
+    CHECK_CUDA(cudaEventSynchronize(stop));
+    float milliseconds = 0;
+    CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
+    cudaMemcpy(D, D_d, M * N * sizeof(ElementD), cudaMemcpyDeviceToHost);
 
-    // std::printf("GEMM completed in %.3f ms\n", milliseconds);
+    std::printf("GEMM completed in %.3f ms\n", milliseconds / 400);
     std::cout << "mxfp4 gemm finished." << std::endl;
+    cudaFree(A_d);
+    cudaFree(B_d);
+    cudaFree(C_d);
+    cudaFree(D_d);
+    cudaFree(SFA_d);
+    cudaFree(SFB_d);
     return 0;
 }

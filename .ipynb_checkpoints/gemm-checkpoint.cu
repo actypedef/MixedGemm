@@ -16,7 +16,7 @@ using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // E
 using         ElementD    = cutlass::bfloat16_t;                            // Element type for D matrix operand
 using         ElementC    = cutlass::bfloat16_t;                            // Element type for C matrix operand
 
-float matmul_host(
+void matmul_host(
         const ElementANormal::DataType *AN,
         const ElementB::DataType *BN,
         const ElementASensitive::DataType *AS,
@@ -38,8 +38,7 @@ float matmul_host(
         const ElementB::ScaleFactorType *SFBO
 )
 {
-    float ms4 = matmul_host4(AN, BN, M, N, KN, C, D, SFAN, SFBN);
-    float ms6 = matmul_host6(AS, BS, M, N, KS, D, D, SFAS, SFBS);
-    float ms8 = matmul_host8(AO, BO, M, N, KO, D, D, SFAO, SFBO);
-    return ms4 + ms6 + ms8;
+    matmul_host4(AN, BN, M, N, KN, C, D, SFAN, SFBN);
+    matmul_host6(AS, BS, M, N, KS, D, D, SFAS, SFBS);
+    matmul_host8(AO, BO, M, N, KO, D, D, SFAO, SFBO);
 }

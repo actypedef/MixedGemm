@@ -43,7 +43,7 @@
     } while (0)
 
 
-float matmul_host4(
+void matmul_host4(
         const cutlass::float_e2m1_t *A,
         const cutlass::float_e2m1_t *B,
         int M,
@@ -55,7 +55,7 @@ float matmul_host4(
         const cutlass::float_ue8m0_t *SFB
 );
 
-float matmul_host6(
+void matmul_host6(
         const cutlass::float_e3m2_t *A,
         const cutlass::float_e2m1_t *B,
         int M,
@@ -67,7 +67,7 @@ float matmul_host6(
         const cutlass::float_ue8m0_t *SFB
 );
 
-float matmul_host8(
+void matmul_host8(
         const cutlass::float_e4m3_t *A,
         const cutlass::float_e2m1_t *B,
         int M,
@@ -79,7 +79,7 @@ float matmul_host8(
         const cutlass::float_ue8m0_t *SFB
 );
 
-float matmul_host(
+void matmul_host(
         const cutlass::float_e2m1_t *AN,
         const cutlass::float_e2m1_t *BN,
         const cutlass::float_e3m2_t *AS,

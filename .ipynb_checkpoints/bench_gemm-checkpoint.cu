@@ -147,27 +147,83 @@ int main() {
     for (size_t i = 0; i < szBO; ++i) {
         scaleBO[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
     }
+    ElementANormal::DataType *AN_d;
+    ElementASensitive::DataType *AS_d;
+    ElementAOutlier::DataType *AO_d;
+    ElementB::DataType *BN_d;
+    ElementB::DataType *BS_d;
+    ElementB::DataType *BO_d;
+    ElementC *C_d;
+    ElementD *D_d;    
+    ElementANormal::ScaleFactorType *SFAN_d;
+    ElementASensitive::ScaleFactorType *SFAS_d;
+    ElementAOutlier::ScaleFactorType *SFAO_d;
+    ElementB::ScaleFactorType *SFBN_d;
+    ElementB::ScaleFactorType *SFBS_d;
+    ElementB::ScaleFactorType *SFBO_d;
+
+    cudaMalloc((void**)&AN_d, M * KN * sizeof(ElementANormal::DataType));
+    cudaMalloc((void**)&AS_d, M * KS * sizeof(ElementASensitive::DataType));
+    cudaMalloc((void**)&AO_d, M * KO * sizeof(ElementAOutlier::DataType));
+    cudaMalloc((void**)&BN_d, N * KN * sizeof(ElementB::DataType));
+    cudaMalloc((void**)&BS_d, N * KS * sizeof(ElementB::DataType));
+    cudaMalloc((void**)&BO_d, N * KO * sizeof(ElementB::DataType));
+    cudaMalloc((void**)&C_d, M * N * sizeof(ElementC));
+    cudaMalloc((void**)&D_d, M * N * sizeof(ElementD));
+    cudaMalloc((void**)&SFAN_d, szAN * sizeof(ElementANormal::ScaleFactorType));
+    cudaMalloc((void**)&SFAS_d, szAS * sizeof(ElementASensitive::ScaleFactorType));
+    cudaMalloc((void**)&SFAO_d, szAO * sizeof(ElementAOutlier::ScaleFactorType));
+    cudaMalloc((void**)&SFBN_d, szBN * sizeof(ElementB::ScaleFactorType));
+    cudaMalloc((void**)&SFBS_d, szBS * sizeof(ElementB::ScaleFactorType));
+    cudaMalloc((void**)&SFBO_d, szBO * sizeof(ElementB::ScaleFactorType));
+    cudaMemcpy(AN_d, AN, M * KN * sizeof(ElementANormal::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(AS_d, AS, M * KS * sizeof(ElementASensitive::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(AO_d, AO, M * KO * sizeof(ElementAOutlier::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(BN_d, BN, N * KN * sizeof(ElementB::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(BS_d, BS, N * KS * sizeof(ElementB::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(BO_d, BO, N * KO * sizeof(ElementB::DataType), cudaMemcpyHostToDevice);
+    cudaMemcpy(C_d, C, M * N * sizeof(ElementC), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFAN_d, scaleAN, szAN * sizeof(ElementANormal::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFAS_d, scaleAS, szAS * sizeof(ElementASensitive::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFAO_d, scaleAO, szAO * sizeof(ElementAOutlier::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFBN_d, scaleBN, szBN * sizeof(ElementB::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFBS_d, scaleBS, szBS * sizeof(ElementB::ScaleFactorType), cudaMemcpyHostToDevice);
+    cudaMemcpy(SFBO_d, scaleBO, szBO * sizeof(ElementB::ScaleFactorType), cudaMemcpyHostToDevice);
+
     
     // Timing using CUDA events
-    // cudaEvent_t start, stop;
-    // CHECK_CUDA(cudaEventCreate(&start));
-    // CHECK_CUDA(cudaEventCreate(&stop));
-    // CHECK_CUDA(cudaEventRecord(start));
-    float ms = 0;
+    cudaEvent_t start, stop;
+    CHECK_CUDA(cudaEventCreate(&start));
+    CHECK_CUDA(cudaEventCreate(&stop));
+    
     for (int it = 0; it < 200; it ++) {
-        float t = matmul_host(AN, BN, AS, BS, AO, BO, M, N, KN, KS, KO, C, D, scaleAN, scaleBN, scaleAS, scaleBS, scaleAO, scaleBO);
+        matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
+    CHECK_CUDA(cudaEventRecord(start));
     for (int it = 0; it < 400; it ++) {
-        float t = matmul_host(AN, BN, AS, BS, AO, BO, M, N, KN, KS, KO, C, D, scaleAN, scaleBN, scaleAS, scaleBS, scaleAO, scaleBO);
-        ms += t;
+        matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
-    std::printf("GEMM completed in %.3f ms\n", ms / 400);
-    // CHECK_CUDA(cudaEventRecord(stop));
-    // CHECK_CUDA(cudaEventSynchronize(stop));
-    // float milliseconds = 0;
-    // CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
+    CHECK_CUDA(cudaEventRecord(stop));
+    CHECK_CUDA(cudaEventSynchronize(stop));
+    float milliseconds = 0;
+    CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
+    cudaMemcpy(D, D_d, M * N * sizeof(ElementD), cudaMemcpyDeviceToHost);
 
-    // std::printf("GEMM completed in %.3f ms\n", milliseconds);
+    std::printf("GEMM completed in %.3f ms\n", milliseconds / 400);
     std::cout << "mixed gemm finished." << std::endl;
+    cudaFree(AN_d);
+    cudaFree(BN_d);
+    cudaFree(AS_d);
+    cudaFree(BS_d);
+    cudaFree(AO_d);
+    cudaFree(BO_d);
+    cudaFree(C_d);
+    cudaFree(D_d);
+    cudaFree(SFAN_d);
+    cudaFree(SFBN_d);
+    cudaFree(SFAS_d);
+    cudaFree(SFBS_d);
+    cudaFree(SFAO_d);
+    cudaFree(SFBO_d);
     return 0; 
 }
