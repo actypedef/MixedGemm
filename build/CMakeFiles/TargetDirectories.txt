@@ -1,6 +1,0 @@
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp4.dir
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp6.dir
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp8.dir
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_gemm.dir
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/edit_cache.dir
-/root/autodl-tmp/MixedGemm/build/CMakeFiles/rebuild_cache.dir
