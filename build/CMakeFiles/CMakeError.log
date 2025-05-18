@@ -1,0 +1,10 @@
+Compiling the CUDA compiler identification source file "CMakeCUDACompilerId.cu" failed.
+Compiler: /usr/local/cuda/bin/nvcc 
+Build flags: 
+Id flags: --keep;--keep-dir;tmp -v
+
+The output was:
+1
+nvcc fatal   : Could not open output file '/tmp/tmpxft_00001433_0000000a'
+
+

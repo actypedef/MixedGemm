@@ -283,3 +283,10 @@ using Fp8Storage = Fp8Subbyte::Storage;
 constexpr const uint32_t kElementsPerVectorFp8 =
     cutlass::sizeof_bits<Fp8Storage>::value /
     cutlass::sizeof_bits<cutlass::float_e4m3_t>::value;
+
+
+using SF8Subbyte = cutlass::MySubbyteReference<cutlass::float_ue8m0_t, uint8_t>;
+using SF8Storage = SF8Subbyte::Storage;
+constexpr const uint32_t kElementsPerVectorSF8 =
+    cutlass::sizeof_bits<SF8Storage>::value /
+    cutlass::sizeof_bits<cutlass::float_ue8m0_t>::value;
