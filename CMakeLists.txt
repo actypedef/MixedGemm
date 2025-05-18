@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(fp4 LANGUAGES CXX CUDA)
+project(MixedGemm LANGUAGES CXX CUDA)
 
 # 查找 CUDA Toolkit
 find_package(CUDAToolkit REQUIRED)
@@ -8,7 +8,7 @@ find_package(CUDAToolkit REQUIRED)
 set(CUTLASS_ROOT /root/autodl-tmp/cutlass)
 
 # 包含 CUTLASS 头文件
-include_directories(./)
+include_directories(./include)
 include_directories(${CUTLASS_ROOT}/include)
 include_directories(${CUTLASS_ROOT}/tools/util/include)
 include_directories(${CUTLASS_ROOT}/examples/common)
@@ -17,10 +17,10 @@ include_directories(${CUTLASS_ROOT}/examples/common)
 set(CMAKE_CUDA_ARCHITECTURES 120a)
 
 # 创建目标可执行文件
-add_executable(bench_fp4 bench_fp4.cu fp4.cu)
-add_executable(bench_fp6 bench_fp6.cu fp6.cu)
-add_executable(bench_fp8 bench_fp8.cu fp8.cu)
-add_executable(bench_gemm bench_gemm.cu gemm.cu fp4.cu fp6.cu fp8.cu)
+add_executable(bench_fp4 bench_fp4.cu src/fp4.cu)
+add_executable(bench_fp6 bench_fp6.cu src/fp6.cu)
+add_executable(bench_fp8 bench_fp8.cu src/fp8.cu)
+add_executable(bench_gemm bench_gemm.cu src/gemm.cu src/fp4.cu src/fp6.cu src/fp8.cu)
 
 # 设置 CUDA 编译选项（允许宽松 constexpr）
 target_compile_options(bench_fp4 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)

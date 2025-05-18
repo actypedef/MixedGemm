@@ -68,7 +68,7 @@ int main() {
     
     for (int i = 0; i < M * KN; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 12.0f - 6.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -77,7 +77,7 @@ int main() {
 
     for (int i = 0; i < M * KS; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 56.0f - 28.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -86,7 +86,7 @@ int main() {
 
     for (int i = 0; i < M * KO; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 480.0f - 240.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -95,7 +95,7 @@ int main() {
 
     for (int i = 0; i < M * N; ++i) {
         // 模拟浮点值
-        ElementC f = static_cast<ElementC>(2.0 * std::rand() / RAND_MAX - 1.0);  // [-1, 1]
+        ElementC f = static_cast<ElementC>(12.0 * std::rand() / RAND_MAX - 6.0);
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -103,7 +103,7 @@ int main() {
     }
     for (int i = 0; i < N * KN; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 12.0f - 6.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -111,7 +111,7 @@ int main() {
     }
     for (int i = 0; i < N * KS; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 12.0f - 6.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -120,7 +120,7 @@ int main() {
 
     for (int i = 0; i < N * KO; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f;  // [-1, 1]
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 12.0f - 6.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换
@@ -130,22 +130,22 @@ int main() {
 
     // 随机初始化 scale（每 block 一个）
     for (size_t i = 0; i < szAN; ++i) {
-        scaleAN[i] = converterSFA(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleAN[i] = converterSFA(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szBN; ++i) {
-        scaleBN[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleBN[i] = converterSFB(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szAS; ++i) {
-        scaleAS[i] = converterSFA(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleAS[i] = converterSFA(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szBS; ++i) {
-        scaleBS[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleBS[i] = converterSFB(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szAO; ++i) {
-        scaleAO[i] = converterSFA(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleAO[i] = converterSFA(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szBO; ++i) {
-        scaleBO[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleBO[i] = converterSFB(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     ElementANormal::DataType *AN_d;
     ElementASensitive::DataType *AS_d;

@@ -1,0 +1,1 @@
+/usr/bin/g++ CMakeFiles/bench_fp4.dir/bench_fp4.cu.o CMakeFiles/bench_fp4.dir/src/fp4.cu.o -o bench_fp4  -lcudadevrt -lcudart_static -lrt -lpthread -ldl  -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib"

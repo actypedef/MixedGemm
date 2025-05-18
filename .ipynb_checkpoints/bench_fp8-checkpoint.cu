@@ -73,10 +73,10 @@ int main() {
 
     // 随机初始化 scale（每 block 一个）
     for (size_t i = 0; i < szA; ++i) {
-        scaleA[i] = converterSFA(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleA[i] = converterSFA(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     for (size_t i = 0; i < szB; ++i) {
-        scaleB[i] = converterSFB(0.1f + static_cast<float>(std::rand()) / RAND_MAX * 0.9f);  // [0.1, 1.0]
+        scaleB[i] = converterSFB(static_cast<float>(std::rand()) / RAND_MAX * 255.0f);  // [0.1, 1.0]
     }
     ElementA::DataType *A_d;
     ElementB::DataType *B_d;
