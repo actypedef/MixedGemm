@@ -1,4 +1,7 @@
+#include "fp6.h"
 #include "gemm.h"
+
+#include "cutlass/numeric_conversion.h"
 
 using namespace cute;
 

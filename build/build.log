@@ -1,1 +1,20 @@
-make: *** No targets specified and no makefile found.  Stop.
+[  7%] Building CUDA object CMakeFiles/gemm_objs.dir/src/fp4.cu.o
+[ 14%] Building CUDA object CMakeFiles/gemm_objs.dir/src/fp6.cu.o
+[ 21%] Building CUDA object CMakeFiles/gemm_objs.dir/src/fp8.cu.o
+[ 28%] Building CUDA object CMakeFiles/gemm_objs.dir/src/gemm.cu.o
+[ 28%] Built target gemm_objs
+[ 35%] Building CUDA object CMakeFiles/bench_fp4.dir/bench_fp4.cu.o
+[ 42%] Linking CUDA executable bench_fp4
+[ 42%] Built target bench_fp4
+[ 50%] Building CUDA object CMakeFiles/bench_fp6.dir/bench_fp6.cu.o
+[ 57%] Linking CUDA executable bench_fp6
+[ 57%] Built target bench_fp6
+[ 64%] Building CUDA object CMakeFiles/bench_fp8.dir/bench_fp8.cu.o
+[ 71%] Linking CUDA executable bench_fp8
+[ 71%] Built target bench_fp8
+[ 78%] Building CUDA object CMakeFiles/bench_gemm.dir/bench_gemm.cu.o
+[ 85%] Linking CUDA executable bench_gemm
+[ 85%] Built target bench_gemm
+[ 92%] Building CXX object CMakeFiles/mixedgemm.dir/src/bindings.cpp.o
+[100%] Linking CXX shared module mixedgemm.so
+[100%] Built target mixedgemm

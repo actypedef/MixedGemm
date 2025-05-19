@@ -12,7 +12,7 @@ namespace cutlass {
 template<>
 struct sizeof_bits<uint8x3> {
     static int const value = 24;
-}
+};
 
 
 template <typename Element_,  /// CUTLASS numeric element type.
