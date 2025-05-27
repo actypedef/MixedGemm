@@ -9,12 +9,12 @@ using namespace cute;
 // A matrix configuration
 using         ElementA    = cutlass::mx_float6_t<cutlass::float_e3m2_t>;    // Element type for A matrix operand
 using         LayoutATag  = cutlass::layout::RowMajor;                      // Layout type for A matrix operand
-constexpr int AlignmentA  = 128;                                             // Memory access granularity/alignment of A matrix in units of elements (up to 16 bytes)
+constexpr int AlignmentA  = 96 * 8 / cutlass::sizeof_bits<ElementA::DataType>::value;                                             // Memory access granularity/alignment of A matrix in units of elements (up to 16 bytes)
 
 // B matrix configuration
 using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
 using         LayoutBTag  = cutlass::layout::ColumnMajor;                   // Layout type for B matrix operand
-constexpr int AlignmentB  = 32;                                             // Memory access granularity/alignment of B matrix in units of elements (up to 16 bytes)
+constexpr int AlignmentB  = 64 * 8 / cutlass::sizeof_bits<ElementB::DataType>::value;                                             // Memory access granularity/alignment of B matrix in units of elements (up to 16 bytes)
 
 // C/D matrix configuration
 using         ElementD    = cutlass::bfloat16_t;                            // Element type for D matrix operand
@@ -101,7 +101,6 @@ void matmul_host6(
 
     layout_SFA = Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, N, K, 1));
     layout_SFB = Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(M, N, K, 1));
-
     
     // Timing using CUDA events
     cudaEvent_t start, stop;
@@ -120,14 +119,20 @@ void matmul_host6(
             SFB, layout_SFB
         },
         { // Epilogue arguments
-            {1.0, 0},
+            {1.0, 1.0},
             C, stride_C,
             D, stride_D
         }
     };
 
     auto status = gemmOp(arguments);
-
+    if (status != cutlass::Status::kSuccess) {
+        // 打印错误信息
+        std::cerr << "CUTLASS GEMM operation in matmul_host4 failed with status: "
+                  << cutlass::cutlassGetStatusString(status) // 使用 CUTLASS 提供的函数转换状态为字符串
+                  << " (Enum value: " << static_cast<int>(status) << ")"
+                  << std::endl;
+    }
     assert(status == cutlass::Status::kSuccess);
 
 }

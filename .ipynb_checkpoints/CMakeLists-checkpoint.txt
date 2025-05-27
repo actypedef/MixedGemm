@@ -6,7 +6,7 @@ find_package(Torch REQUIRED)
 
 # 查找 CUDA Toolkit
 find_package(CUDAToolkit REQUIRED)
-find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+find_package(Python3 REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 find_package(pybind11 CONFIG REQUIRED)
 find_library(TORCH_PYTHON_LIBRARY torch_python PATHS /root/miniconda3/envs/mhq/lib/python3.12/site-packages/torch/lib NO_DEFAULT_PATH)
@@ -33,7 +33,7 @@ set(CMAKE_CUDA_ARCHITECTURES 120a)
 add_compile_options(-w)
 add_compile_options(-fpermissive)
 
-add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu)
+add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu src/reorder.cu)
 
 # 创建目标可执行文件
 add_executable(bench_fp4 bench_fp4.cu
@@ -44,17 +44,24 @@ add_executable(bench_fp8 bench_fp8.cu
 $<TARGET_OBJECTS:gemm_objs>)
 add_executable(bench_gemm bench_gemm.cu
 $<TARGET_OBJECTS:gemm_objs>)
+add_executable(bench_reorder bench_reorder.cu
+$<TARGET_OBJECTS:gemm_objs>)
+add_executable(bench_reorder_gemm bench_reorder_gemm.cu
+$<TARGET_OBJECTS:gemm_objs>)
 # pybind11_add_module(mixedgemm src/bindings.cpp
 # $<TARGET_OBJECTS:gemm_objs>)
 
 add_library(mixedgemm MODULE src/bindings.cpp $<TARGET_OBJECTS:gemm_objs>)
-target_link_libraries(mixedgemm PRIVATE pybind11::module "${TORCH_LIBRARIES}" "${TORCH_PYTHON_LIBRARY}")
+set_source_files_properties(src/bindings.cpp PROPERTIES LANGUAGE CUDA)
+target_link_libraries(mixedgemm PRIVATE pybind11::module "${TORCH_LIBRARIES}" "${TORCH_PYTHON_LIBRARY}" CUDA::cudart)
 
 # 设置 CUDA 编译选项（允许宽松 constexpr）
 target_compile_options(bench_fp4 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_fp6 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_fp8 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_gemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
+target_compile_options(bench_reorder PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
+target_compile_options(bench_reorder_gemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(gemm_objs PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-fPIC>)
 target_compile_options(mixedgemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 
@@ -63,8 +70,11 @@ target_compile_definitions(bench_fp4 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_fp6 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_fp8 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_gemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
+target_compile_definitions(bench_reorder PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
+target_compile_definitions(bench_reorder_gemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(mixedgemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 
 set_property(TARGET mixedgemm PROPERTY CXX_STANDARD 17)
 set_target_properties(mixedgemm PROPERTIES PREFIX "")
 add_definitions(-DTORCH_EXTENSION_NAME=mixedgemm)
+

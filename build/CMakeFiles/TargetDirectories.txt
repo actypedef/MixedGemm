@@ -1,0 +1,10 @@
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/gemm_objs.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp4.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp6.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_fp8.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_gemm.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_reorder.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/bench_reorder_gemm.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/mixedgemm.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/edit_cache.dir
+/root/autodl-tmp/MixedGemm/build/CMakeFiles/rebuild_cache.dir

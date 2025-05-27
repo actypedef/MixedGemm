@@ -120,14 +120,20 @@ void matmul_host8(
             SFB, layout_SFB
         },
         { // Epilogue arguments
-            {1.0, 0},
+            {1.0, 1.0},
             C, stride_C,
             D, stride_D
         }
     };
 
     auto status = gemmOp(arguments);
-
+    if (status != cutlass::Status::kSuccess) {
+        // 打印错误信息
+        std::cerr << "CUTLASS GEMM operation in matmul_host4 failed with status: "
+                  << cutlass::cutlassGetStatusString(status) // 使用 CUTLASS 提供的函数转换状态为字符串
+                  << " (Enum value: " << static_cast<int>(status) << ")"
+                  << std::endl;
+    }
     assert(status == cutlass::Status::kSuccess);
 
 }
