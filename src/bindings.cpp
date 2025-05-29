@@ -35,6 +35,7 @@ torch::Tensor matmul(
     // assert(KN == 2560 && KS == 1408 && KO == 128);
     auto C = torch::zeros({M, N}, torch::dtype(torch::kBFloat16).device(AN.device()));
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
+
     matmul_host(
         reinterpret_cast<cutlass::float_e2m1_t *>(AN.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e2m1_t *>(BN.data_ptr<uint8_t>()),
         reinterpret_cast<cutlass::float_e3m2_t *>(AS.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e2m1_t *>(BS.data_ptr<uint8_t>()), 

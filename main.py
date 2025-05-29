@@ -9,11 +9,22 @@ KN, KS, KO = 2560, 1408, 128
 
 
 # X = torch.ones(M, K, dtype=torch.bfloat16, device='cuda') * 1
-# W = torch.ones(N, K, dtype=torch.bfloat16, device='cuda') * 1
-X = torch.randn(M, K, dtype=torch.bfloat16, device='cuda')
-W = torch.randn(N, K, dtype=torch.bfloat16, device='cuda')
+# X[0, 1] = -2.5
+# W = torch.ones(N, K, dtype=torch.bfloat16, device='cuda') * 0.5
+# X = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 2 - 1
+X = torch.randint(-3, 3, (M, K), dtype=torch.bfloat16, device='cuda')
+X[:, -KS:] = torch.randint(-14, 14, (M, KS), dtype=torch.bfloat16, device='cuda') * 1
+X[:, -KN:] = torch.randint(-16, 16, (M, KN), dtype=torch.bfloat16, device='cuda') * 2
+# W = torch.randn(N, K, dtype=torch.bfloat16, device='cuda') * 3 - 1.5
+W = torch.randint(-3, 3, (N, K), dtype=torch.bfloat16, device='cuda') * 1
+# W = torch.eye(K, dtype=torch.bfloat16, device='cuda') * 1
 # reorder_index = torch.randperm(K, dtype=torch.int16, device='cuda')
 reorder_index = torch.arange(K, dtype=torch.int16, device='cuda') 
+
+# col_abs_max_values = torch.max(torch.abs(X), dim=0).values # .values 获取最大值本身
+# _, reorder_index_long = torch.sort(col_abs_max_values, descending=True)
+# reorder_index = reorder_index_long.to(torch.int16)
+WT = W.t().clone()
 AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.reorder_quantize_x(X, reorder_index, KN, KS, KO)
 BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO)
 
@@ -40,13 +51,26 @@ for name, tensor_val in outputs_x.items():
 
 C = mixedgemm.matmul(AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO)
 
+# D = torch.matmul(X[:, :2560], W[:2560,:])
+D = torch.matmul(X, WT)
+
 print("输出张量 C 的形状:", C.shape)
 print("输出张量 C 的数据类型:", C.dtype)
+
+print("输出张量 D 的形状:", D.shape)
+print("输出张量 D 的数据类型:", D.dtype)
 
 mean_value = torch.mean(C)
 
 variance_value = torch.var(C)
 
-print(f"平均值: {mean_value.item():.6f}")
-print(f"方差: {variance_value.item():.6f}")
-print(f"value:{C.flatten()[:20]}")
+mean_valued = torch.mean(D)
+
+variance_valued = torch.var(D)
+
+print(f"平均值c: {mean_value.item():.6f}")
+print(f"方差c: {variance_value.item():.6f}")
+print(f"平均值d: {mean_valued.item():.6f}")
+print(f"方差d: {variance_valued.item():.6f}")
+print(f"valueC:{C.flatten()[:10]}...{C.flatten()[-10:]}")
+print(f"valueD:{D.flatten()[:10]}...{D.flatten()[-10:]}")

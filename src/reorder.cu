@@ -157,7 +157,7 @@ __global__ void reorder_bf16_mixed_kernel(
   float4 *input_frag_float4 = reinterpret_cast<float4 *>(input_frag);
   float *input_frag_float = reinterpret_cast<float *>(input_frag);
   constexpr int float4_per_thread = elements_per_thread * sizeof(bf16_t) / sizeof(float4);
-  bf16_t maxv = cutlass::bfloat16_t::bitcast(0xff7f),  scale = converterBF(1), r_scale = converterBF(1);
+  bf16_t maxv = converterBF(0),  scale = converterBF(1), r_scale = converterBF(1);
 
   #pragma unroll
   for(int i = 0; i < float4_per_thread;++i){
@@ -172,25 +172,26 @@ __global__ void reorder_bf16_mixed_kernel(
     // fp8 quantize
     lower_bound = converterBF(-FP8_MAX);
     upper_bound = converterBF(FP8_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP8_MAX)))));
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP8_MAX)))));
+    // scale = converterScale(0.5);
     f8scale[row_id * f8scaleldm + (tid + GROUP_NUM(KO) - bdx)] = converterSF(scale);
   }
   else if(tid >= bdx - GROUP_NUM(KO + KS)) {
     // fp6 quant
     lower_bound = converterBF(-FP6_MAX);
     upper_bound = converterBF(FP6_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP6_MAX)))));
-    // scale = converterBF(1);
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP6_MAX)))));
+    // scale = converterScale(0.5);
     f6scale[row_id * f6scaleldm + (tid + GROUP_NUM(KO + KS) - bdx)] = converterSF(scale);
   }
   else {
     // fp4 quant
     lower_bound = converterBF(-FP4_MAX);
     upper_bound = converterBF(FP4_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
     f4scale[row_id * f4scaleldm + tid] = converterSF(scale);
   }
 
@@ -383,24 +384,27 @@ __global__ void reorder_bf16_fp4_kernel(
     // fp4 quantize
     lower_bound = converterBF(-FP4_MAX);
     upper_bound = converterBF(FP4_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    // scale = converterScale(0.5);
     f8scale[row_id * f8scaleldm + (tid + GROUP_NUM(KO) - bdx)] = converterSF(scale);
   }
   else if(tid >= bdx - GROUP_NUM(KO + KS)) {
     // fp4 quant
     lower_bound = converterBF(-FP4_MAX);
     upper_bound = converterBF(FP4_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    // scale = converterScale(0.5);
     f6scale[row_id * f6scaleldm + (tid + GROUP_NUM(KO + KS) - bdx)] = converterSF(scale);
   }
   else {
     // fp4 quant
     lower_bound = converterBF(-FP4_MAX);
     upper_bound = converterBF(FP4_MAX);
-    // maxv = bfmax(maxv, upper_bound);
-    scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    if (maxv == converterBF(0)) scale = converterScale(0.5);
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
+    // scale = converterScale(0.5);
     f4scale[row_id * f4scaleldm + tid] = converterSF(scale);
   }
 
