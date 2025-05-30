@@ -25,6 +25,7 @@ typedef cutlass::float_ue8m0_t sf_t;
 typedef cutlass::bfloat16_t bf16_t;
 
 namespace cg = cooperative_groups;
+using namespace cute;
 
 struct PackFp4 {
   int8_t low : 4;
@@ -97,9 +98,12 @@ __global__ void reorder_bf16_mixed_kernel(
   uint8_t *f4out,
   uint8_t *f6out,
   uint8_t *f8out,
-  sf_t *f4scale,
-  sf_t *f6scale,
-  sf_t *f8scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, normal::LayoutSFA> f4scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, sensitive::LayoutSFA> f6scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, outlier::LayoutSFA> f8scale,
+  auto f4scale,
+  auto f6scale,
+  auto f8scale,
   int f4scaleldm,
   int f6scaleldm,
   int f8scaleldm,
@@ -174,8 +178,11 @@ __global__ void reorder_bf16_mixed_kernel(
     upper_bound = converterBF(FP8_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP8_MAX)))));
-    // scale = converterScale(0.5);
-    f8scale[row_id * f8scaleldm + (tid + GROUP_NUM(KO) - bdx)] = converterSF(scale);
+    int idx = (tid + GROUP_NUM(KO) - bdx);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f8scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
   else if(tid >= bdx - GROUP_NUM(KO + KS)) {
     // fp6 quant
@@ -183,8 +190,11 @@ __global__ void reorder_bf16_mixed_kernel(
     upper_bound = converterBF(FP6_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP6_MAX)))));
-    // scale = converterScale(0.5);
-    f6scale[row_id * f6scaleldm + (tid + GROUP_NUM(KO + KS) - bdx)] = converterSF(scale);
+    int idx = (tid + GROUP_NUM(KO + KS) - bdx);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f6scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
   else {
     // fp4 quant
@@ -192,7 +202,10 @@ __global__ void reorder_bf16_mixed_kernel(
     upper_bound = converterBF(FP4_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
-    f4scale[row_id * f4scaleldm + tid] = converterSF(scale);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, tid % 4), tid / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f4scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
 
   // Use reverse scale to replace devision by multiplication
@@ -218,42 +231,6 @@ __global__ void reorder_bf16_mixed_kernel(
       input_frag_fp8[i + 3] = converterO(result_3);
     }
     else if(tid >= bdx - GROUP_NUM(KO + KS)) {
-      // if ((tid + GROUP_NUM(KO + KS) - bdx)  <= 42 ) {
-      //   result_0 = converterBF(0);
-      //   result_1 = converterBF(0);
-      //   result_2 = converterBF(0);
-      //   result_3 = converterBF(0);
-      // }
-      // if(result_0 != 0) {
-      //   // assert(result_0 == converterBF(8));
-      //   result_0 = converterBF(8);
-      // }
-      // uint8_t a, b, c, d;
-      // a = 12;
-      // b = 12;
-      // c = 12;
-      // d = 12;
-      // uint8_t x = 0b00001100, y = 0b11000011, z = 0b00110000;
-      // if ((tid + GROUP_NUM(KO + KS) - bdx)  >= 1 || i >= 1) {
-      //   a = b = c = d = 0;
-      //   // x = y = z = 0;
-      // }
-      // pack_4_fp6_to_3_bytes(
-      //   a, b, c, d,
-      //   (input_frag_fp6 + (i / 4) * 3)
-      // );
-      
-      // input_frag_fp6[(i / 4) * 3 + 0] = x;
-      // input_frag_fp6[(i / 4) * 3 + 1] = y;
-      // input_frag_fp6[(i / 4) * 3 + 2] = z;
-      // input_frag_fp6[i + 3] = 0b00000000;
-      // pack_4_fp6_to_3_bytes(
-      //   converterS(result_0).storage, // Corrected
-      //   converterS(converterBF(0)).storage,       // Corrected
-      //   converterS(converterBF(0)).storage, // Corrected
-      //   converterS(converterBF(0)).storage, // Corrected
-      //   (input_frag_fp6 + (i / 4) * 3)
-      // );
       pack_4_fp6_to_3_bytes(
         converterS(result_0).storage, // Corrected
         converterS(result_1).storage, // Corrected
@@ -277,26 +254,12 @@ __global__ void reorder_bf16_mixed_kernel(
     f8out_float4[(tid + GROUP_NUM(KO) - bdx) * 2 + 1] = input_frag_float4[1];
   }
   else if(tid >= bdx - GROUP_NUM(KO + KS)){ // FP6 data processing path
-    // f6out is the base pointer for FP6 output (AS_d)
-    // input_frag_float4[0] contains the 16 bytes of data to be written by this thread for its main block.
-    // input_frag_float is reinterpret_cast<float*>(input_frag)
     int idx = (tid + GROUP_NUM(KO + KS) - bdx);
     int64_t* f6out_ll = reinterpret_cast<int64_t*>(f6out);
     int64_t* input_frag_ll = reinterpret_cast<int64_t*>(input_frag);
-    // Perform two 8-byte (longlong) writes
-    // input_frag_ll[0] = 818089008ull;
-    // input_frag_ll[1] = 3272356035ull;
-    // input_frag_ll[1] = 204522252ull;
     f6out_ll[idx * 3 + 0] = input_frag_ll[0];
     f6out_ll[idx * 3 + 1] = input_frag_ll[1];
     f6out_ll[idx * 3 + 2] = input_frag_ll[2];
-    // float* f6out_float = reinterpret_cast<float*>(f6out);
-    // f6out_float[idx * 6 + 0] = input_frag_float[0];
-    // f6out_float[idx * 6 + 1] = input_frag_float[1];
-    // f6out_float[idx * 6 + 2] = input_frag_float[2];
-    // f6out_float[idx * 6 + 3] = input_frag_float[3];
-    // f6out_float[idx * 6 + 4] = input_frag_float[4];
-    // f6out_float[idx * 6 + 5] = input_frag_float[5];
   }
   else {
     // Store fp4_t quantized result
@@ -312,9 +275,12 @@ __global__ void reorder_bf16_fp4_kernel(
   uint8_t *f4out,
   uint8_t *f6out,
   uint8_t *f8out,
-  sf_t *f4scale,
-  sf_t *f6scale,
-  sf_t *f8scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, normal::LayoutSFB> f4scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, sensitive::LayoutSFB> f6scale,
+  // cute::Tensor<cute::ViewEngine<sf_t*>, outlier::LayoutSFB> f8scale,
+  auto f4scale,
+  auto f6scale,
+  auto f8scale,
   int f4scaleldm,
   int f6scaleldm,
   int f8scaleldm, 
@@ -386,8 +352,11 @@ __global__ void reorder_bf16_fp4_kernel(
     upper_bound = converterBF(FP4_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
-    // scale = converterScale(0.5);
-    f8scale[row_id * f8scaleldm + (tid + GROUP_NUM(KO) - bdx)] = converterSF(scale);
+    int idx = (tid + GROUP_NUM(KO) - bdx);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f8scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
   else if(tid >= bdx - GROUP_NUM(KO + KS)) {
     // fp4 quant
@@ -395,8 +364,11 @@ __global__ void reorder_bf16_fp4_kernel(
     upper_bound = converterBF(FP4_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
-    // scale = converterScale(0.5);
-    f6scale[row_id * f6scaleldm + (tid + GROUP_NUM(KO + KS) - bdx)] = converterSF(scale);
+    int idx = (tid + GROUP_NUM(KO + KS) - bdx);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f6scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
   else {
     // fp4 quant
@@ -404,8 +376,10 @@ __global__ void reorder_bf16_fp4_kernel(
     upper_bound = converterBF(FP4_MAX);
     if (maxv == converterBF(0)) scale = converterScale(0.5);
     else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
-    // scale = converterScale(0.5);
-    f4scale[row_id * f4scaleldm + tid] = converterSF(scale);
+    auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
+    auto logical_coord1 = make_coord(make_coord(0, tid % 4), tid / 4);
+    auto logical_coord2 = make_coord(0, 0);
+    f4scale(make_coord(logical_coord0, logical_coord1, logical_coord2)) = converterSF(scale);
   }
 
   // Use reverse scale to replace devision by multiplication
@@ -474,16 +448,18 @@ void run_reorder_bf16_mixed(
   // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
   dim3 grids(seq_len);
   dim3 blocks(128);
-
+  Tensor sfan_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFA(seq_len, 4096, KN)));
+  Tensor sfas_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFA(seq_len, 4096, KS)));
+  Tensor sfao_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFA(seq_len, 4096, KO)));
   reorder_bf16_mixed_kernel<128, group_size, hidden_dim><<<grids, blocks>>>(
     (bf16_t *)hidden_states,
     (int16_t *)reorder_index,
     (uint8_t *)o_normal,
     (uint8_t *)o_sensitive,
     (uint8_t *)o_outlier,
-    (sf_t *)normal_scale,
-    (sf_t *)sensitive_scale,
-    (sf_t *)outlier_scale,
+    sfan_tensor,
+    sfas_tensor,
+    sfao_tensor,
     SCALE_SIZE(KN),
     SCALE_SIZE(KS),
     SCALE_SIZE(KO),
@@ -508,16 +484,18 @@ void run_reorder_bf16_fp4(
   // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
   dim3 grids(seq_len);
   dim3 blocks(128);
-
+  Tensor sfbn_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFB(seq_len, 4096, KN)));
+  Tensor sfbs_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFB(seq_len, 4096, KS)));
+  Tensor sfbo_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFB(seq_len, 4096, KO)));
   reorder_bf16_fp4_kernel<128, group_size, hidden_dim><<<grids, blocks>>>(
     (bf16_t *)hidden_states,
     (int16_t *)reorder_index,
     (uint8_t *)o_normal,
     (uint8_t *)o_sensitive,
     (uint8_t *)o_outlier,
-    (sf_t *)normal_scale,
-    (sf_t *)sensitive_scale,
-    (sf_t *)outlier_scale,
+    sfbn_tensor,
+    sfbs_tensor,
+    sfbo_tensor,
     SCALE_SIZE(KN),
     SCALE_SIZE(KS),
     SCALE_SIZE(KO),

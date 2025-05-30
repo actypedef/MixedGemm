@@ -103,59 +103,59 @@ void matmul_host8(
     layout_SFB = Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(M, N, K, 1));
 
     /***************************************** ↓ When performing benchmark, please comment out these lines ↓ *****************************************/
-    cutlass::HostTensor<ElementA::ScaleFactorType, cutlass::layout::PackedVectorLayout> block_SFA;
-    cutlass::HostTensor<ElementB::ScaleFactorType, cutlass::layout::PackedVectorLayout> block_SFB;
-    block_SFA.reset(cutlass::make_Coord(size(filter_zeros(layout_SFA))));
-    block_SFB.reset(cutlass::make_Coord(size(filter_zeros(layout_SFB))));
+    // cutlass::HostTensor<ElementA::ScaleFactorType, cutlass::layout::PackedVectorLayout> block_SFA;
+    // cutlass::HostTensor<ElementB::ScaleFactorType, cutlass::layout::PackedVectorLayout> block_SFB;
+    // block_SFA.reset(cutlass::make_Coord(size(filter_zeros(layout_SFA))));
+    // block_SFB.reset(cutlass::make_Coord(size(filter_zeros(layout_SFB))));
 
-    int num_sfa_elements = M * (K / 32), num_sfb_elements = N * (K / 32);
-    std::vector<ElementA::ScaleFactorType> sfa_host_buffer(num_sfa_elements);
-    cudaMemcpy(sfa_host_buffer.data(), SFA , num_sfa_elements * sizeof(ElementA::ScaleFactorType), cudaMemcpyDeviceToHost);
-    std::vector<ElementB::ScaleFactorType> sfb_host_buffer(num_sfb_elements);
-    cudaMemcpy(sfb_host_buffer.data(), SFB , num_sfb_elements * sizeof(ElementB::ScaleFactorType), cudaMemcpyDeviceToHost);
+    // int num_sfa_elements = M * (K / 32), num_sfb_elements = N * (K / 32);
+    // std::vector<ElementA::ScaleFactorType> sfa_host_buffer(num_sfa_elements);
+    // cudaMemcpy(sfa_host_buffer.data(), SFA , num_sfa_elements * sizeof(ElementA::ScaleFactorType), cudaMemcpyDeviceToHost);
+    // std::vector<ElementB::ScaleFactorType> sfb_host_buffer(num_sfb_elements);
+    // cudaMemcpy(sfb_host_buffer.data(), SFB , num_sfb_elements * sizeof(ElementB::ScaleFactorType), cudaMemcpyDeviceToHost);
 
-    ElementA::ScaleFactorType* host_sfa_data = block_SFA.host_data(); // Get pointer to HostTensor's data
-    ElementB::ScaleFactorType* host_sfb_data = block_SFB.host_data(); // Get pointer to HostTensor's data
-    auto sfa_tensor_on_host = cute::make_tensor(host_sfa_data, filter_zeros(layout_SFA));
-    auto sfb_tensor_on_host = cute::make_tensor(host_sfb_data, filter_zeros(layout_SFB));
-    // print(filter_zeros(layout_SFA).shape());
-    // print(filter_zeros(layout_SFB).shape());
+    // ElementA::ScaleFactorType* host_sfa_data = block_SFA.host_data(); // Get pointer to HostTensor's data
+    // ElementB::ScaleFactorType* host_sfb_data = block_SFB.host_data(); // Get pointer to HostTensor's data
+    // auto sfa_tensor_on_host = cute::make_tensor(host_sfa_data, filter_zeros(layout_SFA));
+    // auto sfb_tensor_on_host = cute::make_tensor(host_sfb_data, filter_zeros(layout_SFB));
+    // // print(filter_zeros(layout_SFA).shape());
+    // // print(filter_zeros(layout_SFB).shape());
 
 
-    for (int m_tile = 0; m_tile < M; ++m_tile) {
-        for (int k_tile = 0; k_tile < K / 32; ++k_tile) {
-            // Create a CUTE coordinate for the logical tile
-            // The exact structure of this coord depends on how layout_SFA is defined.
-            // For instance, if layout_SFA's shape is (M_TILES_SFA, K_TILES_SFA)
-            int idx = m_tile * (K / 32) + k_tile;
-            auto logical_coord0 = make_coord(make_coord(m_tile % 32, (m_tile / 32) % 4), m_tile / 128);
+    // for (int m_tile = 0; m_tile < M; ++m_tile) {
+    //     for (int k_tile = 0; k_tile < K / 32; ++k_tile) {
+    //         // Create a CUTE coordinate for the logical tile
+    //         // The exact structure of this coord depends on how layout_SFA is defined.
+    //         // For instance, if layout_SFA's shape is (M_TILES_SFA, K_TILES_SFA)
+    //         int idx = m_tile * (K / 32) + k_tile;
+    //         auto logical_coord0 = make_coord(make_coord(m_tile % 32, (m_tile / 32) % 4), m_tile / 128);
             
-            auto logical_coord1 = make_coord(make_coord(0, k_tile % 4), k_tile / 4);
+    //         auto logical_coord1 = make_coord(make_coord(0, k_tile % 4), k_tile / 4);
 
-            auto logical_coord2 = make_coord(0, 0);
-            // Get your pre-computed scale for this logical (m_tile, k_tile)
-            ElementA::ScaleFactorType my_scale_value = sfa_host_buffer[m_tile * (K / 32) + k_tile];
-            // Assign it to the tensor. CUTE handles the mapping to the 1D buffer.
-            sfa_tensor_on_host(make_coord(logical_coord0, logical_coord1, logical_coord2)) = my_scale_value;
-        }
-    }
-    for (int n_tile = 0; n_tile < N; ++n_tile) {
-        for (int k_tile = 0; k_tile < K / 32; ++k_tile) {
-            int idx = n_tile * (K / 32) + k_tile;
-            auto logical_coord0 = make_coord(make_coord(n_tile % 32, (n_tile / 32) % 4), n_tile / 128);
+    //         auto logical_coord2 = make_coord(0, 0);
+    //         // Get your pre-computed scale for this logical (m_tile, k_tile)
+    //         ElementA::ScaleFactorType my_scale_value = sfa_host_buffer[m_tile * (K / 32) + k_tile];
+    //         // Assign it to the tensor. CUTE handles the mapping to the 1D buffer.
+    //         sfa_tensor_on_host(make_coord(logical_coord0, logical_coord1, logical_coord2)) = my_scale_value;
+    //     }
+    // }
+    // for (int n_tile = 0; n_tile < N; ++n_tile) {
+    //     for (int k_tile = 0; k_tile < K / 32; ++k_tile) {
+    //         int idx = n_tile * (K / 32) + k_tile;
+    //         auto logical_coord0 = make_coord(make_coord(n_tile % 32, (n_tile / 32) % 4), n_tile / 128);
             
-            auto logical_coord1 = make_coord(make_coord(0, k_tile % 4), k_tile / 4);
+    //         auto logical_coord1 = make_coord(make_coord(0, k_tile % 4), k_tile / 4);
 
-            auto logical_coord2 = make_coord(0, 0);
-            // Get your pre-computed scale for this logical (m_tile, k_tile)
-            ElementB::ScaleFactorType my_scale_value = sfb_host_buffer[n_tile * (K / 32) + k_tile];
-            // Assign it to the tensor. CUTE handles the mapping to the 1D buffer.
-            sfb_tensor_on_host(make_coord(logical_coord0, logical_coord1, logical_coord2)) = my_scale_value;
-        }
-    }
+    //         auto logical_coord2 = make_coord(0, 0);
+    //         // Get your pre-computed scale for this logical (m_tile, k_tile)
+    //         ElementB::ScaleFactorType my_scale_value = sfb_host_buffer[n_tile * (K / 32) + k_tile];
+    //         // Assign it to the tensor. CUTE handles the mapping to the 1D buffer.
+    //         sfb_tensor_on_host(make_coord(logical_coord0, logical_coord1, logical_coord2)) = my_scale_value;
+    //     }
+    // }
     
-    block_SFA.sync_device(); // Copy to GPU
-    block_SFB.sync_device(); // Copy to GPU
+    // block_SFA.sync_device(); // Copy to GPU
+    // block_SFB.sync_device(); // Copy to GPU
     /***************************************** ↑ When performing benchmark, please comment out these lines ↑ *****************************************/
     
     // Timing using CUDA events
@@ -171,8 +171,8 @@ void matmul_host8(
         { // Mainloop arguments
             A, stride_A,
             B, stride_B,
-            block_SFA.device_data(), layout_SFA,  //When performing benchmark, please repalce it with "SFA, layout_SFA,"
-            block_SFB.device_data(), layout_SFB   //When performing benchmark, please repalce it with "SFB, layout_SFB"
+            SFA, layout_SFA,  //When performing benchmark, please repalce it with "SFA, layout_SFA,"
+            SFB, layout_SFB   //When performing benchmark, please repalce it with "SFB, layout_SFB"
         },
         { // Epilogue arguments
             {1.0, 1.0},
