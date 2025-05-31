@@ -1,0 +1,1 @@
+  -L"/home/actypedef/miniconda3/envs/mhq/lib/python3.12/site-packages/torch/lib"  -lcudadevrt -lcudart_static -lrt -lpthread -ldl 

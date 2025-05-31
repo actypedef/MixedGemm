@@ -69,9 +69,9 @@ torch::Tensor matmul(
 std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> reorder_quantize_x(
         const torch::Tensor &X,
         const torch::Tensor &reorder_index,
-        int KN,
-        int KS,
-        int KO
+        const int KN,
+        const int KS,
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -90,14 +90,80 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     auto SFXS = torch::empty({M * KS / 32}, torch::dtype(torch::kUInt8).device(X.device()));
     auto SFXO = torch::empty({M * KO / 32}, torch::dtype(torch::kUInt8).device(X.device()));
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
-    run_reorder_bf16_mixed<32, 4096>(
-        (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
-        XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
-        KN, KS, KO
-    );
+    if (K == 4096) {
+        run_reorder_bf16_mixed<32, 4096>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 5120) {
+        run_reorder_bf16_mixed<32, 5120>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 3584) {
+        run_reorder_bf16_mixed<32, 3584>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 14336) {
+        run_reorder_bf16_mixed<32, 14336>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 18944) {
+        run_reorder_bf16_mixed<32, 18944>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 12288) {
+        run_reorder_bf16_mixed<32, 12288>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 13824) {
+        run_reorder_bf16_mixed<32, 13824>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else {
+        std::cerr << "K value is not valid !" << std::endl;
+        throw std::runtime_error(std::string("Value error in run_reorder_bf16_mixed "));
+    }
     // CRITICAL: Synchronize and check for errors immediately after kernel launch
     cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
     if (kernel_err != cudaSuccess) {
@@ -120,9 +186,9 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
 std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> reorder_quantize_w(
         const torch::Tensor &W,
         const torch::Tensor &reorder_index,
-        int KN,
-        int KS,
-        int KO
+        const int KN,
+        const int KS,
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -132,7 +198,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     // torch::checkAllSameGPU("matmul", {{A, "A",       0},
     //                                       {   B, "B", 1}});
     int N = W.size(0);
-    int K = KN + KS + KO;
+    const int K = KN + KS + KO;
     // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
     auto WN = torch::empty({N, KN / 2}, torch::dtype(torch::kUInt8).device(W.device()));
     auto WS = torch::empty({N, KS / 2}, torch::dtype(torch::kUInt8).device(W.device()));
@@ -141,14 +207,80 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     auto SFWS = torch::empty({N * KS / 32}, torch::dtype(torch::kUInt8).device(W.device()));
     auto SFWO = torch::empty({N * KO / 32}, torch::dtype(torch::kUInt8).device(W.device()));
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
-    run_reorder_bf16_fp4<32, 4096>(
-        (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
-        WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
-        reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
-        KN, KS, KO
-    );
+    if (K == 4096) {
+         run_reorder_bf16_fp4<32, 4096>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 5120) {
+         run_reorder_bf16_fp4<32, 5120>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 3584) {
+         run_reorder_bf16_fp4<32, 3584>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 14336) {
+         run_reorder_bf16_fp4<32, 14336>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 18944) {
+         run_reorder_bf16_fp4<32, 18944>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 12288) {
+         run_reorder_bf16_fp4<32, 12288>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 13824) {
+         run_reorder_bf16_fp4<32, 13824>(
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFWO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else {
+        std::cerr << "K value is not valid !" << std::endl;
+        throw std::runtime_error(std::string("Value error in run_reorder_bf16_fp4 "));
+    }
     // CRITICAL: Synchronize and check for errors immediately after kernel launch
     cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
     if (kernel_err != cudaSuccess) {

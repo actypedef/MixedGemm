@@ -3,9 +3,9 @@ sys.path.append('build/')
 import torch
 import mixedgemm  
 
-M, N, K = 1024, 4096, 4096
+M, N, K = 1024, 3584, 3584
 group = 32
-KN, KS, KO = 2560, 1408, 128
+KN, KS, KO = 2560, 3584 - 128 - 2560, 128
 
 
 # X = torch.ones(M, K, dtype=torch.bfloat16, device='cuda') * 1

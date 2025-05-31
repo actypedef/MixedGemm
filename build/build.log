@@ -1,0 +1,8 @@
+[ 26%] Built target gemm_objs
+[ 36%] Built target bench_fp4
+[ 47%] Built target bench_fp6
+[ 57%] Built target bench_fp8
+[ 68%] Built target bench_gemm
+[ 78%] Built target bench_reorder
+[ 89%] Built target bench_reorder_gemm
+[100%] Built target mixedgemm

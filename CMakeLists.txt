@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.18)
 project(MixedGemm LANGUAGES CXX CUDA)
 
-set(CMAKE_PREFIX_PATH "/root/miniconda3/envs/mhq/lib/python3.12/site-packages/torch")
+set(CMAKE_PREFIX_PATH "/home/actypedef/miniconda3/envs/mhq/lib/python3.12/site-packages/torch")
 find_package(Torch REQUIRED)
 
 # 查找 CUDA Toolkit
 find_package(CUDAToolkit REQUIRED)
-find_package(Python3 REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Development)
 include_directories(${Python3_INCLUDE_DIRS})
 find_package(pybind11 CONFIG REQUIRED)
-find_library(TORCH_PYTHON_LIBRARY torch_python PATHS /root/miniconda3/envs/mhq/lib/python3.12/site-packages/torch/lib NO_DEFAULT_PATH)
+find_library(TORCH_PYTHON_LIBRARY torch_python PATHS /home/actypedef/miniconda3/envs/mhq/lib/python3.12/site-packages/torch/lib NO_DEFAULT_PATH)
 
 # 设置 CUTLASS 根目录
-set(CUTLASS_ROOT /root/autodl-tmp/cutlass)
-set(PYTHON_ROOT /root/miniconda3/envs/mhq/lib/python3.12)
+set(CUTLASS_ROOT /home/actypedef/cutlass-main)
+set(PYTHON_ROOT /home/actypedef/miniconda3/envs/mhq/lib/python3.12)
 
 # 包含 CUTLASS 头文件
 include_directories(./include)
@@ -77,4 +77,3 @@ target_compile_definitions(mixedgemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 set_property(TARGET mixedgemm PROPERTY CXX_STANDARD 17)
 set_target_properties(mixedgemm PROPERTIES PREFIX "")
 add_definitions(-DTORCH_EXTENSION_NAME=mixedgemm)
-
