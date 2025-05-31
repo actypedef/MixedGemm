@@ -1,1 +1,0 @@
-/usr/bin/g++ @CMakeFiles/bench_reorder_gemm.dir/objects1.rsp -o bench_reorder_gemm @CMakeFiles/bench_reorder_gemm.dir/linkLibs.rsp -L"/usr/local/cuda-12.8/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda-12.8/targets/x86_64-linux/lib"
