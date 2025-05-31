@@ -296,6 +296,7 @@ template<int group_size, int hidden_dim>
 void run_reorder_bf16_mixed(
   bf16_t *hidden_states,
   int seq_len,
+  int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
   uint8_t *o_sensitive,
@@ -310,6 +311,7 @@ template<int group_size, int hidden_dim>
 void run_reorder_bf16_fp4(
   bf16_t *hidden_states,
   int seq_len,
+  int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
   uint8_t *o_sensitive,

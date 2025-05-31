@@ -435,6 +435,7 @@ template<int group_size, int hidden_dim>
 void run_reorder_bf16_mixed(
   bf16_t *hidden_states,
   int seq_len,
+  int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
   uint8_t *o_sensitive,
@@ -448,9 +449,9 @@ void run_reorder_bf16_mixed(
   // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
   dim3 grids(seq_len);
   dim3 blocks(hidden_dim / 32);
-  Tensor sfan_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFA(seq_len, 4096, KN)));
-  Tensor sfas_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFA(seq_len, 4096, KS)));
-  Tensor sfao_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFA(seq_len, 4096, KO)));
+  Tensor sfan_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFA(seq_len, out_features, KN)));
+  Tensor sfas_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFA(seq_len, out_features, KS)));
+  Tensor sfao_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFA(seq_len, out_features, KO)));
   reorder_bf16_mixed_kernel<hidden_dim / 32, group_size, hidden_dim><<<grids, blocks>>>(
     (bf16_t *)hidden_states,
     (int16_t *)reorder_index,
@@ -471,6 +472,7 @@ template<int group_size, int hidden_dim>
 void run_reorder_bf16_fp4(
   bf16_t *hidden_states,
   int seq_len,
+  int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
   uint8_t *o_sensitive,
@@ -482,11 +484,11 @@ void run_reorder_bf16_fp4(
 ){
   // static_assert(group_size == 32 && hidden_dim == 4096, "Current only support 32x4096.");
   // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
-  dim3 grids(seq_len);
+  dim3 grids(out_features);
   dim3 blocks(hidden_dim / 32);
-  Tensor sfbn_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFB(seq_len, 4096, KN)));
-  Tensor sfbs_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFB(seq_len, 4096, KS)));
-  Tensor sfbo_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFB(seq_len, 4096, KO)));
+  Tensor sfbn_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFB(seq_len, out_features, KN)));
+  Tensor sfbs_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFB(seq_len, out_features, KS)));
+  Tensor sfbo_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFB(seq_len, out_features, KO)));
   reorder_bf16_fp4_kernel<hidden_dim / 32, group_size, hidden_dim><<<grids, blocks>>>(
     (bf16_t *)hidden_states,
     (int16_t *)reorder_index,
@@ -504,81 +506,81 @@ void run_reorder_bf16_fp4(
 }
 
 template void run_reorder_bf16_mixed<32, 4096>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 4096>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 3584>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 3584>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 5120>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 5120>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 14336>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 14336>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 18944>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 18944>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 12288>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 12288>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_mixed<32, 13824>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 template void run_reorder_bf16_fp4<32, 13824>(
-  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
 // template void run_reorder_bf16_mixed<32, 27648>(
-//   bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+//   bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
 //   sf_t*, sf_t*, sf_t*, int, int, int
 // );
 
 // template void run_reorder_bf16_fp4<32, 27648>(
-//   bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+//   bf16_t*, int, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
 //   sf_t*, sf_t*, sf_t*, int, int, int
 // );

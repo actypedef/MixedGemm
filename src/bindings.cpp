@@ -71,7 +71,9 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &reorder_index,
         const int KN,
         const int KS,
-        const int KO
+        const int KO,
+        const int seqlen,
+        const int outfeatures
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -92,7 +94,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
     if (K == 4096) {
         run_reorder_bf16_mixed<32, 4096>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -102,7 +104,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 5120) {
         run_reorder_bf16_mixed<32, 5120>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -112,7 +114,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 3584) {
         run_reorder_bf16_mixed<32, 3584>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -122,7 +124,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 14336) {
         run_reorder_bf16_mixed<32, 14336>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -132,7 +134,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 18944) {
         run_reorder_bf16_mixed<32, 18944>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -142,7 +144,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 12288) {
         run_reorder_bf16_mixed<32, 12288>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -152,7 +154,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 13824) {
         run_reorder_bf16_mixed<32, 13824>(
-            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), M, outfeatures, reorder_index.data_ptr<int16_t>(), 
             XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
@@ -188,7 +190,9 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &reorder_index,
         const int KN,
         const int KS,
-        const int KO
+        const int KO,
+        const int seqlen,
+        const int outfeatures
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -209,7 +213,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
     if (K == 4096) {
          run_reorder_bf16_fp4<32, 4096>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -219,7 +223,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 5120) {
          run_reorder_bf16_fp4<32, 5120>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -229,7 +233,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 3584) {
          run_reorder_bf16_fp4<32, 3584>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -239,7 +243,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 14336) {
          run_reorder_bf16_fp4<32, 14336>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -249,7 +253,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 18944) {
          run_reorder_bf16_fp4<32, 18944>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -259,7 +263,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 12288) {
          run_reorder_bf16_fp4<32, 12288>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -269,7 +273,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     }
     else if (K == 13824) {
          run_reorder_bf16_fp4<32, 13824>(
-            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), N, reorder_index.data_ptr<int16_t>(), 
+            (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), seqlen, N, reorder_index.data_ptr<int16_t>(), 
             WN.data_ptr<uint8_t>(), WS.data_ptr<uint8_t>(), WO.data_ptr<uint8_t>(), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWN.data_ptr<uint8_t>()), 
             reinterpret_cast<cutlass::float_ue8m0_t *>(SFWS.data_ptr<uint8_t>()), 
@@ -326,12 +330,14 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m
     m.def("reorder_quantize_x", &reorder_quantize_x,
           "Reorder and quantize activation",
           py::arg("X"), py::arg("reorder_index"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO")
+          py::arg("KN"), py::arg("KS"), py::arg("KO"),
+          py::arg("seqlen"), py::arg("outfeatures")
         );
     m.def("reorder_quantize_w", &reorder_quantize_w,
           "Reorder and quantize weight",
           py::arg("W"), py::arg("reorder_index"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO")
+          py::arg("KN"), py::arg("KS"), py::arg("KO"),
+          py::arg("seqlen"), py::arg("outfeatures")
         );
 
 }
