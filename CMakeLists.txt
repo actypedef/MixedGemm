@@ -12,7 +12,7 @@ find_package(pybind11 CONFIG REQUIRED)
 find_library(TORCH_PYTHON_LIBRARY torch_python PATHS /home/actypedef/miniconda3/envs/mhq/lib/python3.12/site-packages/torch/lib NO_DEFAULT_PATH)
 
 # 设置 CUTLASS 根目录
-set(CUTLASS_ROOT /home/actypedef/cutlass-main)
+set(CUTLASS_ROOT /home/actypedef/cutlass)
 set(PYTHON_ROOT /home/actypedef/miniconda3/envs/mhq/lib/python3.12)
 
 # 包含 CUTLASS 头文件

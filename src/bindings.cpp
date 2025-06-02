@@ -88,9 +88,9 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     auto XN = torch::empty({M, KN / 2}, torch::dtype(torch::kUInt8).device(X.device()));
     auto XS = torch::empty({M, KS / 4 * 3}, torch::dtype(torch::kUInt8).device(X.device()));
     auto XO = torch::empty({M, KO}, torch::dtype(torch::kUInt8).device(X.device()));
-    auto SFXN = torch::empty({M * KN / 32}, torch::dtype(torch::kUInt8).device(X.device()));
-    auto SFXS = torch::empty({M * KS / 32}, torch::dtype(torch::kUInt8).device(X.device()));
-    auto SFXO = torch::empty({M * KO / 32}, torch::dtype(torch::kUInt8).device(X.device()));
+    auto SFXN = torch::empty({(M / 128 + 1) * 128 * KN / 32}, torch::dtype(torch::kUInt8).device(X.device()));
+    auto SFXS = torch::empty({(M / 128 + 1) * 128 * KS / 32}, torch::dtype(torch::kUInt8).device(X.device()));
+    auto SFXO = torch::empty({(M / 128 + 1) * 128 * KO / 32}, torch::dtype(torch::kUInt8).device(X.device()));
     // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
     if (K == 4096) {
         run_reorder_bf16_mixed<32, 4096>(
