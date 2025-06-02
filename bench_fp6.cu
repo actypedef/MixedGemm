@@ -13,7 +13,7 @@ using namespace cute;
 using         ElementA    = cutlass::mx_float6_t<cutlass::float_e3m2_t>;    // Element type for A matrix operand
 
 // B matrix configuration
-using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
+using         ElementB    = cutlass::mx_float6_t<cutlass::float_e3m2_t>;    // Element type for B matrix operand
 
 // C/D matrix configuration
 using         ElementD    = cutlass::bfloat16_t;                            // Element type for D matrix operand
@@ -66,7 +66,7 @@ int main() {
     }
     for (int i = 0; i < N * K; ++i) {
         // 模拟浮点值
-        float f = static_cast<float>(std::rand()) / RAND_MAX * 12.0f - 6.0f;
+        float f = static_cast<float>(std::rand()) / RAND_MAX * 56.0f - 28.0f;
         
         // 这里可以使用 CUTLASS 的量化转换器（如果你使用完整的库）
         // 否则使用构造函数转换

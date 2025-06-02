@@ -489,7 +489,7 @@ void run_reorder_bf16_fp4(
   Tensor sfbn_tensor = cute::make_tensor(normal_scale, filter_zeros(normal::get_layoutSFB(seq_len, out_features, KN)));
   Tensor sfbs_tensor = cute::make_tensor(sensitive_scale, filter_zeros(sensitive::get_layoutSFB(seq_len, out_features, KS)));
   Tensor sfbo_tensor = cute::make_tensor(outlier_scale, filter_zeros(outlier::get_layoutSFB(seq_len, out_features, KO)));
-  reorder_bf16_fp4_kernel<hidden_dim / 32, group_size, hidden_dim><<<grids, blocks>>>(
+  reorder_bf16_mixed_kernel<hidden_dim / 32, group_size, hidden_dim><<<grids, blocks>>>(
     (bf16_t *)hidden_states,
     (int16_t *)reorder_index,
     (uint8_t *)o_normal,

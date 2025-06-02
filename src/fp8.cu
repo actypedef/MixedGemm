@@ -12,9 +12,9 @@ using         LayoutATag  = cutlass::layout::RowMajor;                      // L
 constexpr int AlignmentA  = 16;                                             // Memory access granularity/alignment of A matrix in units of elements (up to 16 bytes)
 
 // B matrix configuration
-using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
+using         ElementB    = cutlass::mx_float8_t<cutlass::float_e4m3_t>;    // Element type for B matrix operand
 using         LayoutBTag  = cutlass::layout::ColumnMajor;                   // Layout type for B matrix operand
-constexpr int AlignmentB  = 32;                                             // Memory access granularity/alignment of B matrix in units of elements (up to 16 bytes)
+constexpr int AlignmentB  = 16;                                             // Memory access granularity/alignment of B matrix in units of elements (up to 16 bytes)
 
 // C/D matrix configuration
 using         ElementD    = cutlass::bfloat16_t;                            // Element type for D matrix operand
@@ -184,7 +184,7 @@ void matmul_host8(
     auto status = gemmOp(arguments);
     if (status != cutlass::Status::kSuccess) {
         // 打印错误信息
-        std::cerr << "CUTLASS GEMM operation in matmul_host4 failed with status: "
+        std::cerr << "CUTLASS GEMM operation in matmul_host8 failed with status: "
                   << cutlass::cutlassGetStatusString(status) // 使用 CUTLASS 提供的函数转换状态为字符串
                   << " (Enum value: " << static_cast<int>(status) << ")"
                   << std::endl;

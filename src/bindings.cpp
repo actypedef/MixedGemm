@@ -38,8 +38,8 @@ torch::Tensor matmul(
 
     matmul_host(
         reinterpret_cast<cutlass::float_e2m1_t *>(AN.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e2m1_t *>(BN.data_ptr<uint8_t>()),
-        reinterpret_cast<cutlass::float_e3m2_t *>(AS.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e2m1_t *>(BS.data_ptr<uint8_t>()), 
-        reinterpret_cast<cutlass::float_e4m3_t *>(AO.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e2m1_t *>(BO.data_ptr<uint8_t>()),
+        reinterpret_cast<cutlass::float_e3m2_t *>(AS.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e3m2_t *>(BS.data_ptr<uint8_t>()), 
+        reinterpret_cast<cutlass::float_e4m3_t *>(AO.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_e4m3_t *>(BO.data_ptr<uint8_t>()),
         M, N,
         KN, KS, KO,
         (cutlass::bfloat16_t *)C.data_ptr<at::BFloat16>(), (cutlass::bfloat16_t *)C.data_ptr<at::BFloat16>(),
@@ -205,8 +205,8 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     const int K = KN + KS + KO;
     // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
     auto WN = torch::empty({N, KN / 2}, torch::dtype(torch::kUInt8).device(W.device()));
-    auto WS = torch::empty({N, KS / 2}, torch::dtype(torch::kUInt8).device(W.device()));
-    auto WO = torch::empty({N, KO / 2}, torch::dtype(torch::kUInt8).device(W.device()));
+    auto WS = torch::empty({N, KS / 4 * 3}, torch::dtype(torch::kUInt8).device(W.device()));
+    auto WO = torch::empty({N, KO}, torch::dtype(torch::kUInt8).device(W.device()));
     auto SFWN = torch::empty({N * KN / 32}, torch::dtype(torch::kUInt8).device(W.device()));
     auto SFWS = torch::empty({N * KS / 32}, torch::dtype(torch::kUInt8).device(W.device()));
     auto SFWO = torch::empty({N * KO / 32}, torch::dtype(torch::kUInt8).device(W.device()));

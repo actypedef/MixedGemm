@@ -13,7 +13,9 @@ using         ElementASensitive = cutlass::mx_float6_t<cutlass::float_e3m2_t>;  
 using         ElementAOutlier   = cutlass::mx_float8_t<cutlass::float_e4m3_t>;    // Element type for A matrix operand
 
 // B matrix configuration
-using         ElementB    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for B matrix operand
+using         ElementBNormal    = cutlass::mx_float4_t<cutlass::float_e2m1_t>;    // Element type for A matrix operand
+using         ElementBSensitive = cutlass::mx_float6_t<cutlass::float_e3m2_t>;    // Element type for A matrix operand
+using         ElementBOutlier   = cutlass::mx_float8_t<cutlass::float_e4m3_t>;    // Element type for A matrix operand
 
 // C/D matrix configuration
 using         ElementD    = cutlass::bfloat16_t;                            // Element type for D matrix operand
@@ -32,9 +34,9 @@ int main() {
     ElementANormal::DataType *AN;
     ElementASensitive::DataType *AS;
     ElementAOutlier::DataType *AO;
-    ElementB::DataType *BN;
-    ElementB::DataType *BS;
-    ElementB::DataType *BO;
+    ElementBNormal::DataType *BN;
+    ElementBSensitive::DataType *BS;
+    ElementBOutlier::DataType *BO;
     ElementC *X;
     ElementD *W;
     // ElementC *C;
@@ -42,9 +44,9 @@ int main() {
     AN = new ElementANormal::DataType[M * KN];
     AS = new ElementASensitive::DataType[M * KS];
     AO = new ElementAOutlier::DataType[M * KO];
-    BN = new ElementB::DataType[N * KN];
-    BS = new ElementB::DataType[N * KS];
-    BO = new ElementB::DataType[N * KO];
+    BN = new ElementBNormal::DataType[N * KN];
+    BS = new ElementBSensitive::DataType[N * KS];
+    BO = new ElementBOutlier::DataType[N * KO];
     X = new ElementC[M * K];
     W = new ElementD[N * K];
     // C = new ElementC[M * N];
@@ -54,17 +56,17 @@ int main() {
     int szAN = ((M * KN + block_size - 1) / block_size);
     ElementANormal::ScaleFactorType *scaleAN = new ElementANormal::ScaleFactorType[((M * KN + block_size - 1) / block_size)];
     int szBN = ((N * KN + block_size - 1) / block_size);
-    ElementB::ScaleFactorType *scaleBN = new ElementB::ScaleFactorType[((N * KN + block_size - 1) / block_size)];
+    ElementBNormal::ScaleFactorType *scaleBN = new ElementBNormal::ScaleFactorType[((N * KN + block_size - 1) / block_size)];
 
     int szAS = ((M * KS + block_size - 1) / block_size);
     ElementASensitive::ScaleFactorType *scaleAS = new ElementASensitive::ScaleFactorType[((M * KS + block_size - 1) / block_size)];
     int szBS = ((N * KS + block_size - 1) / block_size);
-    ElementB::ScaleFactorType *scaleBS = new ElementB::ScaleFactorType[((N * KS + block_size - 1) / block_size)];
+    ElementBSensitive::ScaleFactorType *scaleBS = new ElementBSensitive::ScaleFactorType[((N * KS + block_size - 1) / block_size)];
 
     int szAO = ((M * KO + block_size - 1) / block_size);
     ElementAOutlier::ScaleFactorType *scaleAO = new ElementAOutlier::ScaleFactorType[((M * KO + block_size - 1) / block_size)];
     int szBO = ((N * KO + block_size - 1) / block_size);
-    ElementB::ScaleFactorType *scaleBO = new ElementB::ScaleFactorType[((N * KO + block_size - 1) / block_size)];
+    ElementBOutlier::ScaleFactorType *scaleBO = new ElementBOutlier::ScaleFactorType[((N * KO + block_size - 1) / block_size)];
     
     std::srand(static_cast<unsigned int>(std::time(0)));
     cutlass::NumericConverter<ElementC, float, cutlass::FloatRoundStyle::round_to_nearest> converterX;
@@ -98,9 +100,9 @@ int main() {
     ElementANormal::DataType *AN_d;
     ElementASensitive::DataType *AS_d;
     ElementAOutlier::DataType *AO_d;
-    ElementB::DataType *BN_d;
-    ElementB::DataType *BS_d;
-    ElementB::DataType *BO_d;
+    ElementBNormal::DataType *BN_d;
+    ElementBSensitive::DataType *BS_d;
+    ElementBOutlier::DataType *BO_d;
     ElementC *X_d;
     ElementD *W_d;    
     // ElementC *C_d;
@@ -109,16 +111,16 @@ int main() {
     ElementANormal::ScaleFactorType *SFAN_d;
     ElementASensitive::ScaleFactorType *SFAS_d;
     ElementAOutlier::ScaleFactorType *SFAO_d;
-    ElementB::ScaleFactorType *SFBN_d;
-    ElementB::ScaleFactorType *SFBS_d;
-    ElementB::ScaleFactorType *SFBO_d;
+    ElementBNormal::ScaleFactorType *SFBN_d;
+    ElementBSensitive::ScaleFactorType *SFBS_d;
+    ElementBOutlier::ScaleFactorType *SFBO_d;
 
     cudaMalloc((void**)&AN_d, M * KN * sizeof(ElementANormal::DataType));
     cudaMalloc((void**)&AS_d, M * KS * sizeof(ElementASensitive::DataType));
     cudaMalloc((void**)&AO_d, M * KO * sizeof(ElementAOutlier::DataType));
-    cudaMalloc((void**)&BN_d, N * KN * sizeof(ElementB::DataType));
-    cudaMalloc((void**)&BS_d, N * KS * sizeof(ElementB::DataType));
-    cudaMalloc((void**)&BO_d, N * KO * sizeof(ElementB::DataType));
+    cudaMalloc((void**)&BN_d, N * KN * sizeof(ElementBNormal::DataType));
+    cudaMalloc((void**)&BS_d, N * KS * sizeof(ElementBSensitive::DataType));
+    cudaMalloc((void**)&BO_d, N * KO * sizeof(ElementBOutlier::DataType));
     cudaMalloc((void**)&X_d, M * K * sizeof(ElementC));
     cudaMalloc((void**)&W_d, N * K * sizeof(ElementD));
     // cudaMalloc((void**)&C_d, M * N * sizeof(ElementC));
@@ -127,9 +129,9 @@ int main() {
     cudaMalloc((void**)&SFAN_d, szAN * sizeof(ElementANormal::ScaleFactorType));
     cudaMalloc((void**)&SFAS_d, szAS * sizeof(ElementASensitive::ScaleFactorType));
     cudaMalloc((void**)&SFAO_d, szAO * sizeof(ElementAOutlier::ScaleFactorType));
-    cudaMalloc((void**)&SFBN_d, szBN * sizeof(ElementB::ScaleFactorType));
-    cudaMalloc((void**)&SFBS_d, szBS * sizeof(ElementB::ScaleFactorType));
-    cudaMalloc((void**)&SFBO_d, szBO * sizeof(ElementB::ScaleFactorType));
+    cudaMalloc((void**)&SFBN_d, szBN * sizeof(ElementBNormal::ScaleFactorType));
+    cudaMalloc((void**)&SFBS_d, szBS * sizeof(ElementBSensitive::ScaleFactorType));
+    cudaMalloc((void**)&SFBO_d, szBO * sizeof(ElementBOutlier::ScaleFactorType));
     cudaMemcpy(X_d, X, M * K * sizeof(ElementC), cudaMemcpyHostToDevice);
     cudaMemcpy(W_d, W, N * K * sizeof(ElementD), cudaMemcpyHostToDevice);
     // cudaMemcpy(C_d, C, M * N * sizeof(ElementC), cudaMemcpyHostToDevice);
@@ -146,7 +148,7 @@ int main() {
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
             SFAN_d, SFAS_d, SFAO_d, KN, KS, KO
         );
-        run_reorder_bf16_fp4<32, K>(
+        run_reorder_bf16_mixed<32, K>(
             W_d, M, N, reorder_index_d, 
             reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
             SFBN_d, SFBS_d, SFBO_d, KN, KS, KO
@@ -160,7 +162,7 @@ int main() {
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
             SFAN_d, SFAS_d, SFAO_d, KN, KS, KO
         );
-        run_reorder_bf16_fp4<32, K>(
+        run_reorder_bf16_mixed<32, K>(
             W_d, M, N, reorder_index_d, 
             reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
             SFBN_d, SFBS_d, SFBO_d, KN, KS, KO

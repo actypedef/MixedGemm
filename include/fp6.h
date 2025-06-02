@@ -45,7 +45,7 @@
 
 void matmul_host6(
         const cutlass::float_e3m2_t *A,
-        const cutlass::float_e2m1_t *B,
+        const cutlass::float_e3m2_t *B,
         int M,
         int N,
         int K,
