@@ -3,8 +3,8 @@ sys.path.append('build/')
 import torch
 import time
 import mixedgemm  
-for i in range(10000):
-    M, N, K = 234, 3584, 3584
+for i in range(1):
+    M, N, K = 114, 3584, 3584
     group = 32
     KN, KS, KO = 2560, 3584 - 128 - 2560, 128
 
@@ -79,7 +79,7 @@ for i in range(10000):
     print(f"方差c: {variance_value.item():.6f}")
     print(f"平均值d: {mean_valued.item():.6f}")
     print(f"方差d: {variance_valued.item():.6f}")
-    # print(f"valueC:{C.flatten()[:10]}...{C.flatten()[-10:]}")
-    # print(f"valueD:{D.flatten()[:10]}...{D.flatten()[-10:]}")
+    print(f"valueC:{C.flatten()[:10]}...{C.flatten()[-10:]}")
+    print(f"valueD:{D.flatten()[:10]}...{D.flatten()[-10:]}")
     print(f"finish {i}")
     time.sleep(0.1)
