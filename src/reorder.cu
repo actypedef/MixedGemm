@@ -14,9 +14,9 @@
 #define DEVICE __forceinline__ __device__
 #define HOST __forceinline__ __host__
 
-#define FP4_MAX 3
-#define FP6_MAX 14
-#define FP8_MAX 240
+#define FP4_MAX 6
+#define FP6_MAX 28
+#define FP8_MAX 448
 
 typedef cutlass::float_e2m1_t fp4_t;
 typedef cutlass::float_e3m2_t fp6_t;
