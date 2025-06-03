@@ -177,7 +177,7 @@ __global__ void reorder_bf16_mixed_kernel(
     lower_bound = -FP8_MAX;
     upper_bound = FP8_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP8_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP8_MAX)))));
     int idx = (tid + GROUP_NUM(KO) - bdx);
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
@@ -189,7 +189,7 @@ __global__ void reorder_bf16_mixed_kernel(
     lower_bound = -FP6_MAX;
     upper_bound = FP6_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP6_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP6_MAX)))));
     int idx = (tid + GROUP_NUM(KO + KS) - bdx);
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
@@ -201,7 +201,7 @@ __global__ void reorder_bf16_mixed_kernel(
     lower_bound = -FP4_MAX;
     upper_bound = FP4_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP4_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, tid % 4), tid / 4);
     auto logical_coord2 = make_coord(0, 0);
@@ -351,7 +351,7 @@ __global__ void reorder_bf16_fp4_kernel(
     lower_bound = -FP4_MAX;
     upper_bound = FP4_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP4_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
     int idx = (tid + GROUP_NUM(KO) - bdx);
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
@@ -363,7 +363,7 @@ __global__ void reorder_bf16_fp4_kernel(
     lower_bound = -FP4_MAX;
     upper_bound = FP4_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP4_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
     int idx = (tid + GROUP_NUM(KO + KS) - bdx);
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, idx % 4), idx / 4);
@@ -375,7 +375,7 @@ __global__ void reorder_bf16_fp4_kernel(
     lower_bound = -FP4_MAX;
     upper_bound = FP4_MAX;
     if (maxv == 0) scale = 0.5;
-    else scale = converterScale(ldexpf(1.0f, static_cast<int>(round(log2(maxv / FP4_MAX)))));
+    else scale = converterScale(ldexpf(1.0f, static_cast<int>(ceil(log2(maxv / FP4_MAX)))));
     auto logical_coord0 = make_coord(make_coord(row_id % 32, (row_id / 32) % 4), row_id / 128);
     auto logical_coord1 = make_coord(make_coord(0, tid % 4), tid / 4);
     auto logical_coord2 = make_coord(0, 0);

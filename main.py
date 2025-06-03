@@ -3,7 +3,7 @@ sys.path.append('build/')
 import torch
 import time
 import mixedgemm  
-for i in range(1):
+for i in range(10):
     M, N, K = 114, 3584, 3584
     group = 32
     KN, KS, KO = 2560, 3584 - 128 - 2560, 128
@@ -75,11 +75,17 @@ for i in range(1):
 
     variance_valued = torch.var(D)
 
+    # E = C - D
+    mse_loss_fn = torch.nn.MSELoss()
+    mse_alt = mse_loss_fn(C, D)
+    # variance_error = torch.var(E)
+
     print(f"平均值c: {mean_value.item():.6f}")
     print(f"方差c: {variance_value.item():.6f}")
     print(f"平均值d: {mean_valued.item():.6f}")
     print(f"方差d: {variance_valued.item():.6f}")
     print(f"valueC:{C.flatten()[:10]}...{C.flatten()[-10:]}")
     print(f"valueD:{D.flatten()[:10]}...{D.flatten()[-10:]}")
+    print(f"误差E: {mse_alt.item() / 1e6:.6f}")
     print(f"finish {i}")
-    time.sleep(0.1)
+    time.sleep(1)
