@@ -24,7 +24,6 @@ sudo apt-get update
 sudo apt-get install python3-dev
 
 curl -s https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
 sudo apt update
 sudo apt install cmake
 
@@ -37,8 +36,8 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 ```
 CMAKE_PREFIX_PATH
 torch_python PATHS
-PYTHON ROOT
-CUTLASS ROOT
+PYTHON_ROOT
+CUTLASS_ROOT
 ```
 4. Make and run
 ```
