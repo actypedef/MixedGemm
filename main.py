@@ -32,8 +32,8 @@ for i in range(10):
     # _, reorder_index_long = torch.sort(col_abs_max_values, descending=False)
     # reorder_index = reorder_index_long.to(torch.int16)
     WT = W.t().clone()
-    AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.reorder_quantize_x(X, reorder_index, KN, KS, KO, M, N)
-    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO, M, N)
+    AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.reorder_quantize_x(X, reorder_index, KN, KS, KO, M)
+    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO, N)
 
     # print("--- Outputs from reorder_quantize_x ---")
     # outputs_x = {"AN": AN, "AS": AS, "AO": AO, "SFAN": SFAN, "SFAS": SFAS, "SFAO": SFAO}

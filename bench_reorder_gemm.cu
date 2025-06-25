@@ -144,12 +144,12 @@ int main() {
     
     for (int it = 0; it < 200; it ++) {
         run_reorder_bf16_mixed<32, K>(
-            X_d, M, N, reorder_index_d, 
+            X_d, M, reorder_index_d, 
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
             SFAN_d, SFAS_d, SFAO_d, KN, KS, KO
         );
         run_reorder_bf16_mixed<32, K>(
-            W_d, M, N, reorder_index_d, 
+            W_d, N, reorder_index_d, 
             reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
             SFBN_d, SFBS_d, SFBO_d, KN, KS, KO
         );
@@ -158,12 +158,12 @@ int main() {
     CHECK_CUDA(cudaEventRecord(start));
     for (int it = 0; it < 400; it ++) {
         run_reorder_bf16_mixed<32, K>(
-            X_d, M, N, reorder_index_d, 
+            X_d, M, reorder_index_d, 
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
             SFAN_d, SFAS_d, SFAO_d, KN, KS, KO
         );
         // run_reorder_bf16_fp4<32, K>(
-        //     W_d, M, N, reorder_index_d, 
+        //     W_d, N, reorder_index_d, 
         //     reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
         //     SFBN_d, SFBS_d, SFBO_d, KN, KS, KO
         // );

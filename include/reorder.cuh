@@ -116,11 +116,11 @@ namespace normal{
   // For SFA and SFB tensors layouts
   using Sm1xxBlkScaledConfig =  typename Gemm::GemmKernel::CollectiveMainloop::Sm1xxBlkScaledConfig;
 
-  inline LayoutSFA get_layoutSFA(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, N, K, 1));
+  inline LayoutSFA get_layoutSFA(int M, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, 128, K, 1));
   }
-  inline LayoutSFB get_layoutSFB(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(M, N, K, 1));
+  inline LayoutSFB get_layoutSFB(int N, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(128, N, K, 1));
   }
 }
 
@@ -200,11 +200,11 @@ namespace sensitive{
   using Sm1xxBlkScaledConfig =  typename Gemm::GemmKernel::CollectiveMainloop::Sm1xxBlkScaledConfig;
 
 
-  inline LayoutSFA get_layoutSFA(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, N, K, 1));
+  inline LayoutSFA get_layoutSFA(int M, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, 128, K, 1));
   }
-  inline LayoutSFB get_layoutSFB(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(M, N, K, 1));
+  inline LayoutSFB get_layoutSFB(int N, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(128, N, K, 1));
   }
 }
 
@@ -284,11 +284,11 @@ namespace outlier{
   using Sm1xxBlkScaledConfig =  typename Gemm::GemmKernel::CollectiveMainloop::Sm1xxBlkScaledConfig;
 
 
-  inline LayoutSFA get_layoutSFA(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, N, K, 1));
+  inline LayoutSFA get_layoutSFA(int M, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFA(cute::make_shape(M, 128, K, 1));
   }
-  inline LayoutSFB get_layoutSFB(int M, int N, int K) {
-    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(M, N, K, 1));
+  inline LayoutSFB get_layoutSFB(int N, int K) {
+    return Sm1xxBlkScaledConfig::tile_atom_to_shape_SFB(cute::make_shape(128, N, K, 1));
   }
 }
 
@@ -296,7 +296,7 @@ template<int group_size, int hidden_dim>
 void run_reorder_bf16_mixed(
   bf16_t *hidden_states,
   int seq_len,
-  int out_features,
+  // int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
   uint8_t *o_sensitive,
@@ -310,7 +310,7 @@ void run_reorder_bf16_mixed(
 template<int group_size, int hidden_dim>
 void run_reorder_bf16_fp4(
   bf16_t *hidden_states,
-  int seq_len,
+  // int seq_len,
   int out_features,
   int16_t *reorder_index,
   uint8_t *o_normal,
