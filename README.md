@@ -5,6 +5,11 @@
 **MixedGemm-samedtype** is a mixed-precision GEMM with quantize and reorder kernel performed on Blackwell GPUs(RTX5090).
 
 We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6, mxfp8 GEMM.
+> RTX 5070 Ti Laptop
+
+| Size, Method | reorder&quantize | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
+|---|---|---|---|---|---|---|
+| M = 2048, K = (2048, 0, 2048) | 0.106ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
 
 In this branch, we quantized Weight and Activation to 62.5% mxfp4, 34.375% mxfp6 and 3.125% mxfp8 to achieve best performance with tolerant accuracy loss.
 

@@ -22,11 +22,11 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 1024;
+    const int M = 2048;
     const int N = 4096;
-    const int KN = 2560;
-    const int KS = 1408;
-    const int KO = 128;
+    const int KN = 2048;
+    const int KS = 0;
+    const int KO = 2048;
     const int block_size = 32; 
     
     ElementANormal::DataType *AN;

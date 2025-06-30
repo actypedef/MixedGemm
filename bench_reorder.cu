@@ -23,11 +23,11 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 1024;
+    const int M = 2048;
     const int N = 4096;
-    const int KN = 2560;
-    const int KS = 1408;
-    const int KO = 128;
+    const int KN = 0;
+    const int KS = 0;
+    const int KO = 4096;
     const int K = 4096;
     const int block_size = 32; 
     
@@ -162,11 +162,11 @@ int main() {
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
             SFAN_d, SFAS_d, SFAO_d, KN, KS, KO
         );
-        run_reorder_bf16_mixed<32, K>(
-            W_d, N, reorder_index_d, 
-            reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
-            SFBN_d, SFBS_d, SFBO_d, KN, KS, KO
-        );
+        // run_reorder_bf16_mixed<32, K>(
+        //     W_d, N, reorder_index_d, 
+        //     reinterpret_cast<uint8_t*>(BN_d), reinterpret_cast<uint8_t*>(BS_d), reinterpret_cast<uint8_t*>(BO_d), 
+        //     SFBN_d, SFBS_d, SFBO_d, KN, KS, KO
+        // );
         // matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
     CHECK_CUDA(cudaEventRecord(stop));

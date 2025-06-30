@@ -20,9 +20,9 @@ using         ElementD    = cutlass::bfloat16_t;                            // E
 using         ElementC    = cutlass::bfloat16_t;                            // Element type for C matrix operand
 
 int main() {
-    const int M = 1024;
+    const int M = 2048;
     const int N = 4096;
-    const int K = 128;
+    const int K = 4096;
     const int block_size = 32;
     
     ElementA::DataType *A;
