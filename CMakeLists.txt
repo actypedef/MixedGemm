@@ -34,7 +34,7 @@ add_compile_options(-w)
 add_compile_options(-fpermissive)
 
 # add_library(gemm_fp16_objs OBJECT src/fp16.cu)
-add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu src/reorder.cu)
+add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/f8.cu src/gemm.cu src/reorder.cu)
 
 
 # 创建目标可执行文件
@@ -47,6 +47,8 @@ $<TARGET_OBJECTS:gemm_objs>)
 add_executable(bench_fp6 bench_fp6.cu
 $<TARGET_OBJECTS:gemm_objs>)
 add_executable(bench_fp8 bench_fp8.cu
+$<TARGET_OBJECTS:gemm_objs>)
+add_executable(bench_f8 bench_f8.cu
 $<TARGET_OBJECTS:gemm_objs>)
 add_executable(bench_gemm bench_gemm.cu
 $<TARGET_OBJECTS:gemm_objs>)
@@ -65,6 +67,7 @@ target_link_libraries(mixedgemm PRIVATE pybind11::module "${TORCH_LIBRARIES}" "$
 target_compile_options(bench_fp4 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_fp6 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_fp8 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
+target_compile_options(bench_f8 PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_gemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_reorder PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
 target_compile_options(bench_reorder_gemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>)
@@ -75,6 +78,7 @@ target_compile_options(mixedgemm PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-relax
 target_compile_definitions(bench_fp4 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_fp6 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_fp8 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
+target_compile_definitions(bench_f8 PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_gemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_reorder PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)
 target_compile_definitions(bench_reorder_gemm PRIVATE CUTLASS_ARCH_SM120_SUPPORTED)

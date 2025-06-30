@@ -1,17 +1,20 @@
 # MixedGemm-samedtype
 
-[![pV9V2gx.png](https://s21.ax1x.com/2025/05/30/pV9V2gx.png)](https://imgse.com/i/pV9V2gx)
 
 **MixedGemm-samedtype** is a mixed-precision GEMM with quantize and reorder kernel performed on Blackwell GPUs(RTX5090).
 
 We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6, mxfp8 GEMM.
-> RTX 5070 Ti Laptop
+> RTX 5070 Ti Laptop 
 
-| Size, Method | reorder&quantize | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
+> M = 2048, N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
+
+| Stage | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
 |---|---|---|---|---|---|---|
-| M = 2048, K = (2048, 0, 2048) | 0.106ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
+| Quantize | 0ms | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
+| GEMM | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
+| Dequantize | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms |
 
-In this branch, we quantized Weight and Activation to 62.5% mxfp4, 34.375% mxfp6 and 3.125% mxfp8 to achieve best performance with tolerant accuracy loss.
+In this branch, we perform benchmarks of various Quantize, Dequantize and GEMM kernels.
 
 [CUDA TOOLKIT 12.8.1](https://developer.nvidia.com/cuda-12-8-1-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local) is required.
 
