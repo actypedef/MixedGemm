@@ -10,9 +10,23 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 
 | Stage | FP8-TRT | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
 |---|---|---|---|---|---|---|---|
-| Quantize | 0ms | 0ms | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
+| Quantize | 0ms | - | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
 | GEMM | 0.795 ms | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
-| Dequantize | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms |
+| Dequantize | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
+| Total | 0.795ms | - | 0.579ms | 0.706ms | 0.325ms | 0.492ms | 1.253ms |
+
+
+> RTX 5090 
+
+> M = 2048, N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
+
+| Stage | FP8-TRT | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
+|---|---|---|---|---|---|---|---|
+| Quantize | 0ms | - | 0.027ms | 0.033ms | 0.031ms | 0.031ms | 0ms |
+| GEMM | 0.177 ms | 0.135 ms | 0.139ms | 0.202ms | 0.064ms | 0.106ms | 0.389ms |
+| Dequantize | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
+| Total | 0.177ms | - | 0.166ms | 0.235ms | 0.095ms | 0.137ms | 0.389ms |
+
 
 In this branch, we perform benchmarks of various Quantize, Dequantize and GEMM kernels.
 
