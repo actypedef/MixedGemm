@@ -8,11 +8,11 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 
 > M = 2048, N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
 
-| Stage | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
-|---|---|---|---|---|---|---|
-| Quantize | 0ms | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
-| GEMM | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
-| Dequantize | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms |
+| Stage | FP8-TRT | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
+|---|---|---|---|---|---|---|---|
+| Quantize | 0ms | 0ms | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
+| GEMM | 0.795 ms | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
+| Dequantize | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms | 0ms |
 
 In this branch, we perform benchmarks of various Quantize, Dequantize and GEMM kernels.
 
