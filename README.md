@@ -1,4 +1,4 @@
-# MixedGemm-samedtype
+# MixedGemm-benchmark
 
 
 **MixedGemm-samedtype** is a mixed-precision GEMM with quantize and reorder kernel performed on Blackwell GPUs(RTX5090).
