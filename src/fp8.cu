@@ -159,10 +159,10 @@ void matmul_host8(
     /***************************************** ↑ When performing benchmark, please comment out these lines ↑ *****************************************/
     
     // Timing using CUDA events
-    cudaEvent_t start, stop;
-    CHECK_CUDA(cudaEventCreate(&start));
-    CHECK_CUDA(cudaEventCreate(&stop));
-    CHECK_CUDA(cudaEventRecord(start));
+    // cudaEvent_t start, stop;
+    // CHECK_CUDA(cudaEventCreate(&start));
+    // CHECK_CUDA(cudaEventCreate(&stop));
+    // CHECK_CUDA(cudaEventRecord(start));
     Gemm gemmOp;
 
     typename Gemm::Arguments arguments {

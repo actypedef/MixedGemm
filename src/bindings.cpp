@@ -47,22 +47,22 @@ torch::Tensor matmul(
         reinterpret_cast<cutlass::float_ue8m0_t *>(SFAS.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_ue8m0_t *>(SFBS.data_ptr<uint8_t>()),
         reinterpret_cast<cutlass::float_ue8m0_t *>(SFAO.data_ptr<uint8_t>()), reinterpret_cast<cutlass::float_ue8m0_t *>(SFBO.data_ptr<uint8_t>())
     );
-    // CRITICAL: Synchronize and check for errors immediately after kernel launch
-    cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
-    if (kernel_err != cudaSuccess) {
-        std::cerr << "CUDA error after launching GEMM: "
-                << cudaGetErrorString(kernel_err) << std::endl;
-        // Optionally, throw an exception to propagate the error to Python
-        throw std::runtime_error(std::string("CUDA error in GEMM: ") + cudaGetErrorString(kernel_err));
-    }
+    // // CRITICAL: Synchronize and check for errors immediately after kernel launch
+    // cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
+    // if (kernel_err != cudaSuccess) {
+    //     std::cerr << "CUDA error after launching GEMM: "
+    //             << cudaGetErrorString(kernel_err) << std::endl;
+    //     // Optionally, throw an exception to propagate the error to Python
+    //     throw std::runtime_error(std::string("CUDA error in GEMM: ") + cudaGetErrorString(kernel_err));
+    // }
 
-    cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
-    if (sync_err != cudaSuccess) {
-        std::cerr << "CUDA error during/after GEMM kernel synchronization: "
-                << cudaGetErrorString(sync_err) << std::endl;
-        throw std::runtime_error(std::string("CUDA sync error in GEMM kernel: ") + cudaGetErrorString(sync_err));
-    }
-    std::cout << "GEMM kernel finished and synced successfully." << std::endl; std::cout.flush();
+    // cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
+    // if (sync_err != cudaSuccess) {
+    //     std::cerr << "CUDA error during/after GEMM kernel synchronization: "
+    //             << cudaGetErrorString(sync_err) << std::endl;
+    //     throw std::runtime_error(std::string("CUDA sync error in GEMM kernel: ") + cudaGetErrorString(sync_err));
+    // }
+    // std::cout << "GEMM kernel finished and synced successfully." << std::endl; std::cout.flush();
     return C;
 }
 
@@ -166,22 +166,22 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         std::cerr << "K value is not valid !" << std::endl;
         throw std::runtime_error(std::string("Value error in run_reorder_bf16_mixed "));
     }
-    // CRITICAL: Synchronize and check for errors immediately after kernel launch
-    cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
-    if (kernel_err != cudaSuccess) {
-        std::cerr << "CUDA error after launching run_reorder_bf16_mixed: "
-                << cudaGetErrorString(kernel_err) << std::endl;
-        // Optionally, throw an exception to propagate the error to Python
-        throw std::runtime_error(std::string("CUDA error in run_reorder_bf16_mixed: ") + cudaGetErrorString(kernel_err));
-    }
+    // // CRITICAL: Synchronize and check for errors immediately after kernel launch
+    // cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
+    // if (kernel_err != cudaSuccess) {
+    //     std::cerr << "CUDA error after launching run_reorder_bf16_mixed: "
+    //             << cudaGetErrorString(kernel_err) << std::endl;
+    //     // Optionally, throw an exception to propagate the error to Python
+    //     throw std::runtime_error(std::string("CUDA error in run_reorder_bf16_mixed: ") + cudaGetErrorString(kernel_err));
+    // }
 
-    cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
-    if (sync_err != cudaSuccess) {
-        std::cerr << "CUDA error during/after run_reorder_bf16_mixed synchronization: "
-                << cudaGetErrorString(sync_err) << std::endl;
-        throw std::runtime_error(std::string("CUDA sync error in run_reorder_bf16_mixed: ") + cudaGetErrorString(sync_err));
-    }
-    std::cout << "run_reorder_bf16_mixed kernel finished and synced successfully." << std::endl; std::cout.flush();
+    // cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
+    // if (sync_err != cudaSuccess) {
+    //     std::cerr << "CUDA error during/after run_reorder_bf16_mixed synchronization: "
+    //             << cudaGetErrorString(sync_err) << std::endl;
+    //     throw std::runtime_error(std::string("CUDA sync error in run_reorder_bf16_mixed: ") + cudaGetErrorString(sync_err));
+    // }
+    // std::cout << "run_reorder_bf16_mixed kernel finished and synced successfully." << std::endl; std::cout.flush();
     return std::make_tuple(XN, XS, XO, SFXN, SFXS, SFXO);
 }
 
@@ -285,22 +285,22 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         std::cerr << "K value is not valid !" << std::endl;
         throw std::runtime_error(std::string("Value error in run_reorder_bf16_fp4 "));
     }
-    // CRITICAL: Synchronize and check for errors immediately after kernel launch
-    cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
-    if (kernel_err != cudaSuccess) {
-        std::cerr << "CUDA error after launching run_reorder_bf16_fp4: "
-                << cudaGetErrorString(kernel_err) << std::endl;
-        // Optionally, throw an exception to propagate the error to Python
-        throw std::runtime_error(std::string("CUDA error in run_reorder_bf16_fp4: ") + cudaGetErrorString(kernel_err));
-    }
+    // // CRITICAL: Synchronize and check for errors immediately after kernel launch
+    // cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
+    // if (kernel_err != cudaSuccess) {
+    //     std::cerr << "CUDA error after launching run_reorder_bf16_fp4: "
+    //             << cudaGetErrorString(kernel_err) << std::endl;
+    //     // Optionally, throw an exception to propagate the error to Python
+    //     throw std::runtime_error(std::string("CUDA error in run_reorder_bf16_fp4: ") + cudaGetErrorString(kernel_err));
+    // }
 
-    cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
-    if (sync_err != cudaSuccess) {
-        std::cerr << "CUDA error during/after run_reorder_bf16_fp4 synchronization: "
-                << cudaGetErrorString(sync_err) << std::endl;
-        throw std::runtime_error(std::string("CUDA sync error in run_reorder_bf16_fp4: ") + cudaGetErrorString(sync_err));
-    }
-    std::cout << "run_reorder_bf16_fp4 kernel finished and synced successfully." << std::endl; std::cout.flush();
+    // cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
+    // if (sync_err != cudaSuccess) {
+    //     std::cerr << "CUDA error during/after run_reorder_bf16_fp4 synchronization: "
+    //             << cudaGetErrorString(sync_err) << std::endl;
+    //     throw std::runtime_error(std::string("CUDA sync error in run_reorder_bf16_fp4: ") + cudaGetErrorString(sync_err));
+    // }
+    // std::cout << "run_reorder_bf16_fp4 kernel finished and synced successfully." << std::endl; std::cout.flush();
     return std::make_tuple(WN, WS, WO, SFWN, SFWS, SFWO);
 }
 
