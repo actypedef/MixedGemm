@@ -49,7 +49,7 @@ curl -s https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gp
 sudo apt update
 sudo apt install cmake
 
-conda create -n mixedgemm python=3.12
+conda create -n mixedgemm python=3.10
 conda activate mixedgemm
 conda install pybind11
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
