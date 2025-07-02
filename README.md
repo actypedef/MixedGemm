@@ -1,7 +1,7 @@
 # MixedGemm-benchmark
 
 
-**MixedGemm-samedtype** is a mixed-precision GEMM with quantize and reorder kernel performed on Blackwell GPUs(RTX5090).
+**MixedGemm** is a mixed-precision GEMM with quantize and reorder kernel performed on Blackwell GPUs(RTX5090).
 
 We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6, mxfp8 GEMM.
 > RTX 5070 Ti Laptop 
@@ -27,12 +27,15 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 | Dequantize | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
 | Total | 0.177ms | - | 0.166ms | 0.235ms | 0.095ms | 0.137ms | 0.389ms |
 
+![](/img/result.png)
 
 In this branch, we perform benchmarks of various Quantize, Dequantize and GEMM kernels.
 
 [CUDA TOOLKIT 12.8.1](https://developer.nvidia.com/cuda-12-8-1-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local) is required.
 
 ## Installation
+
+0. If you do not have CUDA TOOLKIT 12.8.1, please refer to [this](https://developer.nvidia.com/cuda-12-8-1-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local), make sure you are on RTX50 Series or other BlackWell GPUs
 
 1. Clone this repo and CUTLASS (Make sure you install Git, and Conda)
 ```
@@ -62,8 +65,17 @@ torch_python PATHS
 PYTHON_ROOT
 CUTLASS_ROOT
 ```
-4. Make and run
+4. Run benchmark
 ```
+pip install --upgrade tensorrt
+
 bash remake.sh
-python main.py
+
+./build/bench_gemm
+./build/bench_reorder
+./build/bench_fp8
+
+python fp16-test.py
+python trt-fp8-profiler.py
+python trt-w4a16-profiler.py
 ```
