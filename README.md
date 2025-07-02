@@ -26,12 +26,15 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 | Dequantize | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
 | Total | 0.177ms | - | 0.166ms | 0.235ms | 0.095ms | 0.137ms | 0.389ms |
 
+![](/img/result.png)
 
 In this branch, we quantized Weight and Activation to mxfp4, mxfp6 and mxfp8 to achieve best performance with tolerant accuracy loss.
 
 [CUDA TOOLKIT 12.8.1](https://developer.nvidia.com/cuda-12-8-1-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local) is required.
 
 ## Installation
+
+0. If you do not have CUDA TOOLKIT 12.8.1, please refer to [this](https://developer.nvidia.com/cuda-12-8-1-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local), make sure you are on RTX50 Series or other BlackWell GPUs
 
 1. Clone this repo and CUTLASS (Make sure you install Git, and Conda)
 ```
