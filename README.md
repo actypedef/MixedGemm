@@ -8,12 +8,12 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 
 > M = 2048, N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
 
-| Stage | FP8-TRT | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
-|---|---|---|---|---|---|---|---|
-| Quantize | 0ms | - | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
-| GEMM | 0.795 ms | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
-| Dequantize | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
-| Total | 0.795ms | - | 0.579ms | 0.706ms | 0.325ms | 0.492ms | 1.253ms |
+| Stage | W4A16-TRT | FP8-TRT | FP8 | MXFP8 | MXFP6 | MXFP4 | MicroMix | FP16 |
+|---|---|---|---|---|---|---|---|---|
+| Quantize | 0.075ms | 0.082ms | - | 0.078ms | 0.105ms | 0.096ms | 0.106ms | 0ms |
+| GEMM | 0.775ms | 0.682 ms | 0.566 ms | 0.501ms | 0.671ms | 0.229ms | 0.386ms | 1.253ms |
+| Dequantize | 0ms | 0ms | - | 0ms | 0ms | 0ms | 0ms | 0ms |
+| Total | 0.850ms | 0.764ms | - | 0.579ms | 0.706ms | 0.325ms | 0.492ms | 1.253ms |
 
 
 > RTX 5090 
