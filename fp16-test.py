@@ -1,7 +1,7 @@
 import torch
 from torch.nn import functional as F
 
-import pycuda.driver as cuda
+# import pycuda.driver as cuda
 
 # class L2Flush:
 #     def __init__(self):
@@ -28,7 +28,7 @@ import pycuda.driver as cuda
 # l2Flusher = L2Flush()
 # l2Flusher.flush(cuda.Stream(0))
 
-test_M_pool = [8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+test_M_pool = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
 
 
 @torch.no_grad()

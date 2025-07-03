@@ -44,6 +44,6 @@ void matmul_host(
 )
 {
     matmul_host4(AN, BN, M, N, KN, C, D, SFAN, SFBN);
-    matmul_host6(AS, BS, M, N, KS, D, D, SFAS, SFBS);
+    // matmul_host6(AS, BS, M, N, KS, D, D, SFAS, SFBS);
     matmul_host8(AO, BO, M, N, KO, D, D, SFAO, SFBO);
 }

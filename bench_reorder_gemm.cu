@@ -23,11 +23,11 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 2048;
+    const int M = 4096;
     const int N = 4096;
     const int KN = 2048;
-    const int KS = 128;
-    const int KO = 2048-128;
+    const int KS = 0;
+    const int KO = 2048;
     const int K = 4096;
     const int block_size = 32; 
     

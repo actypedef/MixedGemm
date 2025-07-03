@@ -6,7 +6,7 @@ import traceback
 from collections import OrderedDict
 
 # --- 配置参数 ---
-M, N, K = 2048, 4096, 4096
+M, N, K = 4096, 4096, 4096
 N_ITERATIONS = 100
 N_WARMUP = 10
 
