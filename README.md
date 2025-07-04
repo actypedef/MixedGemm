@@ -14,17 +14,6 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 | Dequantize | 0ms       | 0ms      | 0ms     | 0ms     | 0ms     | 0.133ms       | 2.784ms    | 0ms      | 0ms     |
 | Total      | 0.850ms   | 0.764ms  | 0.579ms | 0.706ms | 0.325ms | 3.284ms       | 3.481ms    | 0.492ms  | 1.253ms |
 
-> N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
-
-| Batch Size | W4A16-TRT | FP8-TRT  | MXFP8   | Atom(INT4) | MicroMix | FP16    |
-|---         |---        |---       |---      |---         |---       |---      |
-| 4096       | 1.784ms   | 1.534ms  | 1.112ms | 6.929ms    | 0.960ms  | 2.529ms |
-| 2048       | 0.850ms   | 0.764ms  | 0.579ms | 3.481ms    | 0.492ms  | 1.253ms |
-| 1024       | 0.437ms   | 0.450ms  | 0.307ms | 1.937ms    | 0.263ms  | 0.644ms |
-| 512        | 0.302ms   | 0.187ms  | 0.186ms | 1.030ms    | 0.138ms  | 0.353ms |
-| 256        | 0.197ms   | 0.109ms  | 0.101ms | 0.758ms    | 0.096ms  | 0.232ms |
-| 128        | 0.???ms   | 0.???ms  | 0.???ms | 0.???ms    | 0.???ms  | 0.???ms |
-
 
 ---
 
@@ -40,17 +29,7 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 | Total      | 0.240ms   | 0.186ms  | 0.166ms | 0.235ms | 0.095ms | 1.010ms      | 0.965ms    | 0.137ms  | 0.389ms |
 
 
-> N = 4096, K = 4096 (50%FP4, 0%FP6, 50%FP8)
-
-| Batch Size | W4A16-TRT | FP8-TRT  | MXFP8   | Atom(INT4) | MicroMix | FP16    |
-|---         |---        |---       |---      |---         |---       |---      |
-| 4096       | 0.436ms   | 0.382ms  | 0.314ms | ?.???ms    | 0.241ms  | 0.766ms |
-| 2048       | 0.240ms   | 0.186ms  | 0.166ms | 0.965ms    | 0.137ms  | 0.389ms |
-| 1024       | 0.116ms   | 0.098ms  | 0.080ms | 0.497ms    | 0.084ms  | 0.200ms |
-| 512        | 0.068ms   | 0.061ms  | 0.050ms | 0.257ms    | 0.097ms  | 0.105ms |
-| 256        | 0.044ms   | 0.035ms  | 0.048ms | 0.250ms    | 0.094ms  | 0.067ms |
-| 128        | 0.???ms   | 0.???ms  | 0.???ms | 0.???ms    | 0.???ms  | 0.???ms |
-
+![](/img/speedup.png)
 ![](/img/result.png)
 
 In this branch, we quantized Weight and Activation to mxfp4, mxfp6 and mxfp8 to achieve best performance with tolerant accuracy loss.
