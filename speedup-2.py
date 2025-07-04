@@ -23,7 +23,7 @@ latency_data_5070ti = {
     'FP8-TRT': np.array([0.048, 0.066, 0.109, 0.187, 0.450, 0.764, 1.534]),
     'W4A16-TRT': np.array([0.125, 0.145, 0.197, 0.302, 0.437, 0.850, 1.784]),
     'Atom (INT4)': np.array([0.517, 0.498, 0.758, 1.030, 1.937, 3.481, 6.929]),
-    'MicroMix (Amortized)': np.array([0.092, 0.093, 0.097, 0.144, 0.262, 0.498, 0.953]),
+    'MicroMix (Average)': np.array([0.092, 0.093, 0.097, 0.144, 0.262, 0.498, 0.953]),
     'MicroMix (Best Case)': np.array([0.089, 0.085, 0.088, 0.126, 0.234, 0.454, 0.856]),
     'MicroMix (Worst Case)': np.array([0.092, 0.093, 0.098, 0.148, 0.273, 0.517, 0.986]),
 }
@@ -34,7 +34,7 @@ latency_data_5090 = {
     'FP8-TRT': np.array([0.022, 0.027, 0.035, 0.061, 0.098, 0.186, 0.382]),
     'W4A16-TRT': np.array([0.032, 0.039, 0.044, 0.068, 0.116, 0.240, 0.436]),
     'Atom (INT4)': np.array([0.253, 0.254, 0.250, 0.257, 0.497, 0.965, 1.681]),
-    'MicroMix (Amortized)': np.array([0.092, 0.095, 0.100, 0.100, 0.087, 0.135, 0.242]),
+    'MicroMix (Average)': np.array([0.092, 0.095, 0.100, 0.100, 0.087, 0.135, 0.242]),
     'MicroMix (Best Case)': np.array([0.094, 0.094, 0.093, 0.094, 0.084, 0.120, 0.209]),
     'MicroMix (Worst Case)': np.array([0.096, 0.098, 0.101, 0.103, 0.095, 0.139, 0.252]),
 }
@@ -84,7 +84,7 @@ for i, ax in enumerate(axes):
     )
     # MicroMix 均摊性能
     ax.plot(
-        x_indices, speedup_data['MicroMix (Amortized)'], label='MicroMix (Amortized)',
+        x_indices, speedup_data['MicroMix (Average)'], label='MicroMix (Average)',
         marker=markers['MicroMix'], color=colors['MicroMix'], linewidth=2.5, markersize=8
     )
     # 其他对比方法
@@ -115,7 +115,7 @@ order = [
     labels.index('W4A16-TRT'),
     labels.index('Atom (INT4)'),
     labels.index('MicroMix Speedup Range'),
-    labels.index('MicroMix (Amortized)')
+    labels.index('MicroMix (Average)')
 ]
 
 # 在图表下方居中放置图例
