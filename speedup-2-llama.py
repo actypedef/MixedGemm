@@ -13,8 +13,8 @@ plt.rcParams['figure.dpi'] = 150
 
 # --- 2. 原始延迟数据定义 ---
 # 横轴共享
-batch_size_powers = np.arange(6, 13)
-x_labels = [f'$2^{{{p}}}$' for p in batch_size_powers]
+seq_len_powers = np.arange(6, 13)
+x_labels = [f'$2^{{{p}}}$' for p in seq_len_powers]
 x_indices = np.arange(len(x_labels))
 
 # 数据源 1: RTX 5070 Ti Laptop
@@ -97,7 +97,7 @@ for i, ax in enumerate(axes):
         
     # --- 4c. 美化单个子图 ---
     ax.set_title(gpu_titles[i], fontsize=16, pad=15)
-    ax.set_xlabel('Batch Size', fontsize=14, labelpad=10)
+    ax.set_xlabel('Sequence Lenght', fontsize=14, labelpad=10)
     ax.set_xticks(x_indices)
     ax.set_xticklabels(x_labels)
     ax.set_ylim(bottom=0)

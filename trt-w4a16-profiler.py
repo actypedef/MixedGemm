@@ -6,9 +6,9 @@ import traceback
 from collections import OrderedDict
 
 # --- 配置参数 ---
-M, N, K = 64, 4096, 4096
-N_ITERATIONS = 100
-N_WARMUP = 10
+M, N, K = 64, 5120, 5120
+N_ITERATIONS = 5000
+N_WARMUP = 300
 
 # 确保N是偶数，因为我们将两个INT4值打包成一个INT8
 if N % 2 != 0:

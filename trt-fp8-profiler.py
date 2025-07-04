@@ -6,9 +6,9 @@ import traceback
 from collections import OrderedDict
 
 # --- 配置参数 ---
-M, N, K = 64, 4096, 4096
-N_ITERATIONS = 100
-N_WARMUP = 10
+M, N, K = 64, 5120, 5120
+N_ITERATIONS = 5000
+N_WARMUP = 3000
 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 

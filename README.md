@@ -30,7 +30,8 @@ We use [CUTLASS](https://github.com/NVIDIA/cutlass) to perform the mxfp4, mxfp6,
 | Total      | 0.240ms   | 0.186ms  | 0.166ms | 0.235ms | 0.095ms | 1.010ms      | 0.965ms    | 0.137ms  | 0.389ms |
 
 
-![](/img/speedup.png)
+![](/img/llama.png)
+![](/img/qwen.png)
 ![](/img/result.png)
 
 In this branch, we perform benchmarks of various Quantize, Dequantize and GEMM kernels.

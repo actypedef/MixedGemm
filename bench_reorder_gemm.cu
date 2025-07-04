@@ -23,12 +23,12 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 64;
-    const int N = 4096;
-    const int KN = 2176;
+    const int M = 4096;
+    const int N = 5120;
+    const int KN = 2944;
     const int KS = 0;
-    const int KO = 1920;
-    const int K = 4096;
+    const int KO = 5120-2944;
+    const int K = 5120;
     const int block_size = 32; 
     
     ElementANormal::DataType *AN;
@@ -142,7 +142,7 @@ int main() {
     CHECK_CUDA(cudaEventCreate(&start));
     CHECK_CUDA(cudaEventCreate(&stop));
     
-    for (int it = 0; it < 30000; it ++) {
+    for (int it = 0; it < 3000; it ++) {
         run_reorder_bf16_mixed<32, K>(
             X_d, M, reorder_index_d, 
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
@@ -156,7 +156,7 @@ int main() {
         matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
     CHECK_CUDA(cudaEventRecord(start));
-    for (int it = 0; it < 50000; it ++) {
+    for (int it = 0; it < 5000; it ++) {
         run_reorder_bf16_mixed<32, K>(
             X_d, M, reorder_index_d, 
             reinterpret_cast<uint8_t*>(AN_d), reinterpret_cast<uint8_t*>(AS_d), reinterpret_cast<uint8_t*>(AO_d), 
@@ -190,7 +190,7 @@ int main() {
     }
     std::cout << "kernel finished and synced successfully." << std::endl; std::cout.flush();
 
-    std::printf("REORDER and GEMM kernel completed in %.3f ms\n", milliseconds / 50000);
+    std::printf("REORDER and GEMM kernel completed in %.3f ms\n", milliseconds / 5000);
     std::cout << "reorder and gemm finished." << std::endl;
     cudaFree(AN_d);
     cudaFree(BN_d);

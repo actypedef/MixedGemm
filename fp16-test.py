@@ -28,7 +28,7 @@ from torch.nn import functional as F
 # l2Flusher = L2Flush()
 # l2Flusher.flush(cuda.Stream(0))
 
-test_M_pool = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
+test_M_pool = [64, 128, 256, 512, 1024, 2048, 4096]
 
 
 @torch.no_grad()
@@ -61,7 +61,7 @@ def test_quant_linear_a16_w16(M, N ,K) -> float:
 a16w16_flops = []
 a16w16_times = []
 for m in test_M_pool:
-    gflops, elapsed_time_ms = test_quant_linear_a16_w16(m, 4096, 4096)
+    gflops, elapsed_time_ms = test_quant_linear_a16_w16(m, 5120, 5120)
     a16w16_flops.append(gflops)
     a16w16_times.append(elapsed_time_ms)
 
