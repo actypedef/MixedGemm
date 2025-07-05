@@ -321,3 +321,20 @@ void run_reorder_bf16_fp4(
   sf_t *outlier_scale,
   int KN, int KS, int KO
 );
+
+template<int group_size, int hidden_dim>
+void run_rmsnorm_bf16_mixed(
+  bf16_t *hidden_states,
+  bf16_t *weight,
+  float eps,
+  int seq_len,
+  // int out_features,
+  int16_t *reorder_index,
+  uint8_t *o_normal,
+  uint8_t *o_sensitive,
+  uint8_t *o_outlier,
+  sf_t *normal_scale,
+  sf_t *sensitive_scale,
+  sf_t *outlier_scale,
+  int KN, int KS, int KO
+);

@@ -22,7 +22,7 @@ for i in range(10):
     # X = torch.randint(-3, 3, (M, K), dtype=torch.bfloat16, device='cuda')
     # X[:, -KS:] = torch.randint(-14, 14, (M, KS), dtype=torch.bfloat16, device='cuda') * 1
     # X[:, -KN:] = torch.randint(-16, 16, (M, KN), dtype=torch.bfloat16, device='cuda') * 2
-    W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 18 - 9
+    W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 3
     # W = torch.randint(-3, 3, (N, K), dtype=torch.bfloat16, device='cuda') * 1
     # W = torch.eye(K, dtype=torch.bfloat16, device='cuda') * 1
     # reorder_index = torch.randperm(K, dtype=torch.int16, device='cuda')
