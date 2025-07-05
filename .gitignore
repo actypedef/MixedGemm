@@ -1,3 +1,6 @@
 *.log
 
 build/
+
+.vscode/
+.ipynb_checkpoints/

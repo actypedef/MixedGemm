@@ -38,21 +38,18 @@ add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu src/re
 
 
 # 创建目标可执行文件
-# add_executable(bench_fp16 bench_fp16.cu
-# $<TARGET_OBJECTS:gemm_fp16_objs>)
 
-
-add_executable(bench_fp4 bench_fp4.cu
+add_executable(bench_fp4 benchmark/bench_fp4.cu
 $<TARGET_OBJECTS:gemm_objs>)
-add_executable(bench_fp6 bench_fp6.cu
+add_executable(bench_fp6 benchmark/bench_fp6.cu
 $<TARGET_OBJECTS:gemm_objs>)
-add_executable(bench_fp8 bench_fp8.cu
+add_executable(bench_fp8 benchmark/bench_fp8.cu
 $<TARGET_OBJECTS:gemm_objs>)
-add_executable(bench_gemm bench_gemm.cu
+add_executable(bench_gemm benchmark/bench_gemm.cu
 $<TARGET_OBJECTS:gemm_objs>)
-add_executable(bench_reorder bench_reorder.cu
+add_executable(bench_reorder benchmark/bench_reorder.cu
 $<TARGET_OBJECTS:gemm_objs>)
-add_executable(bench_reorder_gemm bench_reorder_gemm.cu
+add_executable(bench_reorder_gemm benchmark/bench_reorder_gemm.cu
 $<TARGET_OBJECTS:gemm_objs>)
 # pybind11_add_module(mixedgemm src/bindings.cpp
 # $<TARGET_OBJECTS:gemm_objs>)
