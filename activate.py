@@ -24,8 +24,8 @@ for i in range(10):
     reorder_index = torch.arange(K, dtype=torch.int16, device='cuda') 
 
     WT = W.t().clone()
-    AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.activate_quantize_x(X, NormW, KN, KS, KO, M)
-    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO, N)
+    AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.activate_quantize_x(X, NormW, KN, KS, KO)
+    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO)
 
     C = mixedgemm.matmul(AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO)
 

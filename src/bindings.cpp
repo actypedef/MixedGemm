@@ -71,9 +71,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &reorder_index,
         const int KN,
         const int KS,
-        const int KO,
-        const int seqlen
-        // const int outfeatures
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -190,9 +188,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &reorder_index,
         const int KN,
         const int KS,
-        const int KO,
-        // const int seqlen,
-        const int outfeatures
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -311,9 +307,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &reorder_index,
         const int KN,
         const int KS,
-        const int KO,
-        const int seqlen
-        // const int outfeatures
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -371,9 +365,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
         const torch::Tensor &B,
         const int KN,
         const int KS,
-        const int KO,
-        const int seqlen
-        // const int outfeatures
+        const int KO
 )
 {
 //     torch::checkAllContiguous("matmul", {{A, "A",       0},
@@ -447,26 +439,22 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m
     m.def("reorder_quantize_x", &reorder_quantize_x,
           "Reorder and quantize activation",
           py::arg("X"), py::arg("reorder_index"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO"),
-          py::arg("seqlen")
+          py::arg("KN"), py::arg("KS"), py::arg("KO")
         );
     m.def("reorder_quantize_w", &reorder_quantize_w,
           "Reorder and quantize weight",
           py::arg("W"), py::arg("reorder_index"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO"),
-          py::arg("outfeatures")
+          py::arg("KN"), py::arg("KS"), py::arg("KO")
         );
 
     m.def("rmsnorm_quantize_x", &rmsnorm_quantize_x,
           "Normalize and quantize activation",
           py::arg("X"), py::arg("W"), py::arg("eps"), py::arg("reorder_index"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO"),
-          py::arg("seqlen")
+          py::arg("KN"), py::arg("KS"), py::arg("KO")
         );
      m.def("activate_quantize_x", &activate_quantize_x,
           "Activate and quantize activation",
           py::arg("A"), py::arg("B"),
-          py::arg("KN"), py::arg("KS"), py::arg("KO"),
-          py::arg("seqlen")
+          py::arg("KN"), py::arg("KS"), py::arg("KO")
         );
 }
