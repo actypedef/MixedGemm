@@ -33,7 +33,7 @@ set(CMAKE_CUDA_ARCHITECTURES 120a)
 add_compile_options(-w)
 add_compile_options(-fpermissive)
 
-add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu src/reorder.cu src/rmsnorm.cu)
+add_library(gemm_objs OBJECT src/fp4.cu src/fp6.cu src/fp8.cu src/gemm.cu src/reorder.cu src/rmsnorm.cu src/activate.cu)
 
 
 # 创建目标可执行文件

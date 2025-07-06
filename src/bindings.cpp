@@ -366,6 +366,60 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
     return std::make_tuple(XN, XS, XO, SFXN, SFXS, SFXO);
 }
 
+std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> activate_quantize_x(
+        const torch::Tensor &A,
+        const torch::Tensor &B,
+        const int KN,
+        const int KS,
+        const int KO,
+        const int seqlen
+        // const int outfeatures
+)
+{
+//     torch::checkAllContiguous("matmul", {{A, "A",       0},
+//                                                 {B, "B", 1}});
+    // torch::checkDeviceType("matmul", {AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO}, at::DeviceType::CUDA);
+
+    // torch::checkAllSameGPU("matmul", {{A, "A",       0},
+    //                                       {   B, "B", 1}});
+    int M = A.size(0);
+    int K = KN + KS + KO;
+    // static_assert(KN % 128 == 0 && KS % 128 == 0 && KO % 128 == 0, "TMA requires 32bytes alignment.");
+    auto XN = torch::empty({M, KN / 2}, torch::dtype(torch::kUInt8).device(A.device()));
+    auto XS = torch::empty({M, KS / 4 * 3}, torch::dtype(torch::kUInt8).device(A.device()));
+    auto XO = torch::empty({M, KO}, torch::dtype(torch::kUInt8).device(A.device()));
+    auto SFXN = torch::empty({(M / 128 + 1) * 128 * KN / 32}, torch::dtype(torch::kUInt8).device(A.device()));
+    auto SFXS = torch::empty({(M / 128 + 1) * 128 * KS / 32}, torch::dtype(torch::kUInt8).device(A.device()));
+    auto SFXO = torch::empty({(M / 128 + 1) * 128 * KO / 32}, torch::dtype(torch::kUInt8).device(A.device()));
+    // cutlass::NumericConverter<cutlass::float_ue8m0_t, float, cutlass::FloatRoundStyle::round_to_nearest> converterSF;
+    run_activate_bf16_mixed(
+        (cutlass::bfloat16_t *)A.data_ptr<at::BFloat16>(), (cutlass::bfloat16_t *)B.data_ptr<at::BFloat16>(), M, K, 
+        XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+        reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+        KN, KS, KO
+    );
+    // // CRITICAL: Synchronize and check for errors immediately after kernel launch
+    // cudaError_t kernel_err = cudaGetLastError(); // Check for asynchronous errors from the kernel
+    // if (kernel_err != cudaSuccess) {
+    //     std::cerr << "CUDA error after launching run_reorder_bf16_mixed: "
+    //             << cudaGetErrorString(kernel_err) << std::endl;
+    //     // Optionally, throw an exception to propagate the error to Python
+    //     throw std::runtime_error(std::string("CUDA error in run_reorder_bf16_mixed: ") + cudaGetErrorString(kernel_err));
+    // }
+
+    // cudaError_t sync_err = cudaDeviceSynchronize(); // Wait for the kernel to complete and check for runtime errors
+    // if (sync_err != cudaSuccess) {
+    //     std::cerr << "CUDA error during/after run_reorder_bf16_mixed synchronization: "
+    //             << cudaGetErrorString(sync_err) << std::endl;
+    //     throw std::runtime_error(std::string("CUDA sync error in run_reorder_bf16_mixed: ") + cudaGetErrorString(sync_err));
+    // }
+    // std::cout << "run_reorder_bf16_mixed kernel finished and synced successfully." << std::endl; std::cout.flush();
+    return std::make_tuple(XN, XS, XO, SFXN, SFXS, SFXO);
+}
+
+
 
 //====== pybind ======
 
@@ -406,6 +460,12 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m
     m.def("rmsnorm_quantize_x", &rmsnorm_quantize_x,
           "Normalize and quantize activation",
           py::arg("X"), py::arg("W"), py::arg("eps"), py::arg("reorder_index"),
+          py::arg("KN"), py::arg("KS"), py::arg("KO"),
+          py::arg("seqlen")
+        );
+     m.def("activate_quantize_x", &activate_quantize_x,
+          "Activate and quantize activation",
+          py::arg("A"), py::arg("B"),
           py::arg("KN"), py::arg("KS"), py::arg("KO"),
           py::arg("seqlen")
         );
