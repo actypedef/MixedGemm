@@ -17,15 +17,15 @@ for i in range(10):
     X[:, -KS:] = torch.rand(M, KS, dtype=torch.bfloat16, device='cuda') * 14 + 14
     X[:, -KN:] = torch.rand(M, KN, dtype=torch.bfloat16, device='cuda') * 256 + 256
     X = X * signs
-    # W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 3
+    # W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 4
     W = torch.eye(K, dtype=torch.bfloat16, device='cuda') * 1
-    NormW = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 3
+    NormW = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 1
     # NormW = torch.ones(M, K, dtype=torch.bfloat16, device='cuda')
-    reorder_index = torch.arange(K, dtype=torch.int16, device='cuda') 
+    # reorder_index = torch.arange(K, dtype=torch.int16, device='cuda') 
 
     WT = W.t().clone()
     AN, AS, AO, SFAN, SFAS, SFAO = mixedgemm.activate_quantize_x(X, NormW, KN, KS, KO)
-    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.reorder_quantize_w(W, reorder_index, KN, KS, KO)
+    BN, BS, BO, SFBN, SFBS, SFBO = mixedgemm.downproj_quantize_w(W, KN, KS, KO)
 
     C = mixedgemm.matmul(AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO)
 

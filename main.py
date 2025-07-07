@@ -4,9 +4,9 @@ import torch
 import time
 import mixedgemm  
 for i in range(10):
-    M, N, K = 114, 3584, 3584
+    M, N, K = 114, 3072, 3072
     group = 32
-    KN, KS, KO = 2560, 3584 - 128 - 2560, 128
+    KN, KS, KO = 2560, 3072 - 128 - 2560, 128
 
 
     # X = torch.ones(M, K, dtype=torch.bfloat16, device='cuda') * 1

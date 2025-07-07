@@ -525,6 +525,16 @@ template void run_reorder_bf16_fp4<32, 3584>(
   sf_t*, sf_t*, sf_t*, int, int, int
 );
 
+template void run_reorder_bf16_mixed<32, 3072>(
+  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  sf_t*, sf_t*, sf_t*, int, int, int
+);
+
+template void run_reorder_bf16_fp4<32, 3072>(
+  bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  sf_t*, sf_t*, sf_t*, int, int, int
+);
+
 template void run_reorder_bf16_mixed<32, 5120>(
   bf16_t*, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int

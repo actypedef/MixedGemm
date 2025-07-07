@@ -17,7 +17,8 @@ for i in range(10):
     X[:, -KS:] = torch.rand(M, KS, dtype=torch.bfloat16, device='cuda') * 14 + 14
     X[:, -KN:] = torch.rand(M, KN, dtype=torch.bfloat16, device='cuda') * 256 + 256
     X = X * signs
-    W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 3
+    # W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 13
+    W = torch.eye(K, dtype=torch.bfloat16, device='cuda') * 1
     NormW = torch.rand(K, dtype=torch.bfloat16, device='cuda')
     # NormW = torch.ones(K, dtype=torch.bfloat16, device='cuda')
     reorder_index = torch.arange(K, dtype=torch.int16, device='cuda') 
