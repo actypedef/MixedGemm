@@ -356,3 +356,15 @@ template void run_rmsnorm_bf16_mixed<32, 4096>(
   bf16_t*, bf16_t*, float, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
   sf_t*, sf_t*, sf_t*, int, int, int
 );
+template void run_rmsnorm_bf16_mixed<32, 5120>(
+  bf16_t*, bf16_t*, float, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  sf_t*, sf_t*, sf_t*, int, int, int
+);
+template void run_rmsnorm_bf16_mixed<32, 3072>(
+  bf16_t*, bf16_t*, float, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  sf_t*, sf_t*, sf_t*, int, int, int
+);
+template void run_rmsnorm_bf16_mixed<32, 3584>(
+  bf16_t*, bf16_t*, float, int, int16_t*, uint8_t*, uint8_t*, uint8_t*,
+  sf_t*, sf_t*, sf_t*, int, int, int
+);

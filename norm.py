@@ -7,9 +7,9 @@ import time
 import mixedgemm  
 
 for i in range(10):
-    M, N, K = 2048, 4096, 4096
+    M, N, K = 2048, 5120, 5120
     group = 32
-    KN, KS, KO = 2048, 1024, 1024
+    KN, KS, KO = 2560, 1280, 1280
 
 
     signs = (torch.randint(0, 2, (M, K), device='cuda', dtype=torch.bfloat16) * 2 - 1)
@@ -30,7 +30,7 @@ for i in range(10):
     C = mixedgemm.matmul(AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO)
 
     
-    D = torch.matmul(F.rms_norm(X, (4096,), weight=NormW, eps=1e-6), WT)
+    D = torch.matmul(F.rms_norm(X, (K,), weight=NormW, eps=1e-6), WT)
 
     mean_value = torch.mean(C)
 

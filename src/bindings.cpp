@@ -357,6 +357,39 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor, torch::Te
             KN, KS, KO
         );
     }
+    else if (K == 5120) {
+        run_rmsnorm_bf16_mixed<32, 5120>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), eps,
+            M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 3072) {
+        run_rmsnorm_bf16_mixed<32, 3072>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), eps,
+            M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
+    else if (K == 3584) {
+        run_rmsnorm_bf16_mixed<32, 3584>(
+            (cutlass::bfloat16_t *)X.data_ptr<at::BFloat16>(), (cutlass::bfloat16_t *)W.data_ptr<at::BFloat16>(), eps,
+            M, reorder_index.data_ptr<int16_t>(), 
+            XN.data_ptr<uint8_t>(), XS.data_ptr<uint8_t>(), XO.data_ptr<uint8_t>(), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXN.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXS.data_ptr<uint8_t>()), 
+            reinterpret_cast<cutlass::float_ue8m0_t *>(SFXO.data_ptr<uint8_t>()), 
+            KN, KS, KO
+        );
+    }
     else {
         std::cerr << "K value is not valid !" << std::endl;
         throw std::runtime_error(std::string("Value error in run_rmsnorm_bf16_mixed "));
