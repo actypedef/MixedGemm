@@ -3,14 +3,16 @@ import torch
 import numpy as np
 import time
 
-# 1. 定义 Llama 3-8B 解码器层的结构参数
-BATCH_SIZE = 8
+# 1. 定义 Qwen2.5-7B 解码器层的结构参数
+BATCH_SIZE = 1
 SEQ_LEN = 2048
-HIDDEN_SIZE = 4096
-NUM_ATTENTION_HEADS = 32
+# --- [修改] Qwen2.5-7B 结构参数 ---
+HIDDEN_SIZE = 5120
+NUM_ATTENTION_HEADS = 40
 NUM_KV_HEADS = 8
+FFN_HIDDEN_SIZE = 27648
+# --- [修改结束] ---
 HEAD_DIM = HIDDEN_SIZE // NUM_ATTENTION_HEADS
-FFN_HIDDEN_SIZE = 14336
 GQA_FACTOR = NUM_ATTENTION_HEADS // NUM_KV_HEADS
 
 # TensorRT 日志记录器
@@ -23,6 +25,7 @@ def create_dummy_weights(shape, dtype=np.float16):
 def _create_rope_cache(network, dtype):
     """预计算 RoPE 的 sin 和 cos 缓存并作为常量添加到网络中"""
     print("Creating RoPE cache...")
+    # Qwen2.5 同样使用 10000.0 作为基础 theta
     theta_base = 10000.0
     
     theta = theta_base ** (-2.0 * np.arange(0, HEAD_DIM, 2, dtype=np.float32) / HEAD_DIM)
@@ -94,32 +97,39 @@ def add_rmsnorm(network, input_tensor, weight_shape):
 
 
 def build_decoder_layer_engine():
-    """构建使用 FP16 的 Llama 3 解码器层 TensorRT 引擎"""
+    """构建使用 FP16 的 Qwen2.5-7B 解码器层 TensorRT 引擎"""
     builder = trt.Builder(TRT_LOGGER)
     network = builder.create_network(1 << int(trt.NetworkDefinitionCreationFlag.STRONGLY_TYPED))
     config = builder.create_builder_config()
 
-    # --- [修正] ---
-    # 在 STRONGLY_TYPED 网络中，不需要也不允许设置全局的 FP16 标志。
-    # 网络的数据类型由每个张量自身的类型定义（这里已经是 FP16）。
-    # 因此，移除下面这一行代码：
-    # config.set_flag(trt.BuilderFlag.FP16)
-
     input_tensor = network.add_input(name="input_hidden_state", dtype=trt.float16, shape=(BATCH_SIZE, SEQ_LEN, HIDDEN_SIZE))
     
-    # 因为已经移除了 FP8 的代码，所以直接使用 input_tensor
     normed_input = add_rmsnorm(network, input_tensor, (HIDDEN_SIZE,))
     
     print("Building Attention Block with RoPE...")
     
+    # --- [修改] Qwen2.5 的权重和偏置 ---
     q_proj_w = network.add_constant((HIDDEN_SIZE, HIDDEN_SIZE), create_dummy_weights((HIDDEN_SIZE, HIDDEN_SIZE))).get_output(0)
     k_proj_w = network.add_constant((HIDDEN_SIZE, NUM_KV_HEADS * HEAD_DIM), create_dummy_weights((HIDDEN_SIZE, NUM_KV_HEADS * HEAD_DIM))).get_output(0)
     v_proj_w = network.add_constant((HIDDEN_SIZE, NUM_KV_HEADS * HEAD_DIM), create_dummy_weights((HIDDEN_SIZE, NUM_KV_HEADS * HEAD_DIM))).get_output(0)
     o_proj_w = network.add_constant((HIDDEN_SIZE, HIDDEN_SIZE), create_dummy_weights((HIDDEN_SIZE, HIDDEN_SIZE))).get_output(0)
 
+    # Qwen2.5 在 QKV 和 O 投射中加入了偏置
+    q_proj_b = network.add_constant((1, 1, HIDDEN_SIZE), create_dummy_weights((1, 1, HIDDEN_SIZE))).get_output(0)
+    k_proj_b = network.add_constant((1, 1, NUM_KV_HEADS * HEAD_DIM), create_dummy_weights((1, 1, NUM_KV_HEADS * HEAD_DIM))).get_output(0)
+    v_proj_b = network.add_constant((1, 1, NUM_KV_HEADS * HEAD_DIM), create_dummy_weights((1, 1, NUM_KV_HEADS * HEAD_DIM))).get_output(0)
+    o_proj_b = network.add_constant((1, 1, HIDDEN_SIZE), create_dummy_weights((1, 1, HIDDEN_SIZE))).get_output(0)
+    # --- [修改结束] ---
+
     q_einsum = network.add_einsum([normed_input, q_proj_w], "bsk,kn->bsn"); q_proj = q_einsum.get_output(0)
     k_einsum = network.add_einsum([normed_input, k_proj_w], "bsk,kn->bsn"); k_proj = k_einsum.get_output(0)
     v_einsum = network.add_einsum([normed_input, v_proj_w], "bsk,kn->bsn"); v_proj = v_einsum.get_output(0)
+
+    # --- [新增] 添加偏置 ---
+    q_proj = network.add_elementwise(q_proj, q_proj_b, trt.ElementWiseOperation.SUM).get_output(0)
+    k_proj = network.add_elementwise(k_proj, k_proj_b, trt.ElementWiseOperation.SUM).get_output(0)
+    v_proj = network.add_elementwise(v_proj, v_proj_b, trt.ElementWiseOperation.SUM).get_output(0)
+    # --- [新增结束] ---
 
     def reshape_and_transpose(tensor, num_heads):
         shuffle_layer = network.add_shuffle(tensor)
@@ -169,19 +179,32 @@ def build_decoder_layer_engine():
     o_einsum = network.add_einsum([attn_out_bsn, o_proj_w], "bsk,kn->bsn")
     attention_output = o_einsum.get_output(0)
 
+    # --- [新增] 添加输出偏置 ---
+    attention_output = network.add_elementwise(attention_output, o_proj_b, trt.ElementWiseOperation.SUM).get_output(0)
+    # --- [新增结束] ---
+
     residual1 = network.add_elementwise(input_tensor, attention_output, trt.ElementWiseOperation.SUM).get_output(0)
 
     normed_residual1 = add_rmsnorm(network, residual1, (HIDDEN_SIZE,))
 
+    # --- [修改] Qwen2.5 的 FFN 权重 ---
     ffn_gate_w = network.add_constant((HIDDEN_SIZE, FFN_HIDDEN_SIZE), create_dummy_weights((HIDDEN_SIZE, FFN_HIDDEN_SIZE))).get_output(0)
     ffn_up_w = network.add_constant((HIDDEN_SIZE, FFN_HIDDEN_SIZE), create_dummy_weights((HIDDEN_SIZE, FFN_HIDDEN_SIZE))).get_output(0)
     ffn_down_w = network.add_constant((FFN_HIDDEN_SIZE, HIDDEN_SIZE), create_dummy_weights((FFN_HIDDEN_SIZE, HIDDEN_SIZE))).get_output(0)
+    # --- [修改结束] ---
 
     gate_einsum = network.add_einsum([normed_residual1, ffn_gate_w], "bsk,kn->bsn"); gate_proj = gate_einsum.get_output(0)
     up_einsum = network.add_einsum([normed_residual1, ffn_up_w], "bsk,kn->bsn"); up_proj = up_einsum.get_output(0)
     
-    silu_gate = network.add_activation(gate_proj, trt.ActivationType.SIGMOID).get_output(0)
-    gated_ffn = network.add_elementwise(silu_gate, up_proj, trt.ElementWiseOperation.PROD).get_output(0)
+    # Qwen2.5 使用 SwiGLU, 其实现和 Llama 类似
+    # 1. 计算 sigmoid(gate_proj)
+    sigmoid_gate = network.add_activation(gate_proj, trt.ActivationType.SIGMOID).get_output(0)
+
+    # 2. 计算 SiLU(gate_proj) = gate_proj * sigmoid(gate_proj)
+    silu_out = network.add_elementwise(gate_proj, sigmoid_gate, trt.ElementWiseOperation.PROD).get_output(0)
+    silu_out.name = "SiLU_Output"
+    
+    gated_ffn = network.add_elementwise(silu_out, up_proj, trt.ElementWiseOperation.PROD).get_output(0)
     
     down_einsum = network.add_einsum([gated_ffn, ffn_down_w], "bsk,kn->bsn"); ffn_output = down_einsum.get_output(0)
     
@@ -190,15 +213,10 @@ def build_decoder_layer_engine():
     final_output.name = "output_hidden_state"
     network.mark_output(final_output)
     
-    # --- [修正] ---
-    # 移除下面这行废弃的代码，以消除警告
-    # final_output.dtype = trt.float16
-
     print("Building TensorRT engine... (This may take a few minutes)")
     plan = builder.build_serialized_network(network, config)
     if not plan:
         print("ERROR: Engine build failed.")
-        # 增加一些诊断信息
         for i in range(network.num_layers):
             layer = network.get_layer(i)
             print(f"Layer {i}: {layer.name}, Type: {layer.type}")
@@ -231,12 +249,13 @@ def benchmark(engine_plan):
     context.set_tensor_address("output_hidden_state", output_tensor.data_ptr())
 
     print("Warming up...")
-    for _ in range(100):
+    # 适当减少warmup次数以加快启动速度
+    for _ in range(100 * 16 // BATCH_SIZE):
         context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
     print("Warm-up finished.")
 
-    num_runs = 1000
+    num_runs = 500 * 16 // BATCH_SIZE
     latencies = []
     print(f"Running benchmark for {num_runs} iterations...")
     for _ in range(num_runs):
@@ -251,21 +270,20 @@ def benchmark(engine_plan):
         latency = (end_time - start_time) * 1000
         latencies.append(latency)
 
+    # 移除前几个可能不稳定的结果
+    latencies = latencies[5:]
     avg_latency = np.mean(latencies)
     throughput = (BATCH_SIZE * SEQ_LEN) / (avg_latency / 1000) if avg_latency > 0 else 0
 
-    print("\n--- Benchmark Results ---")
+    print("\n--- Benchmark Results (Qwen2.5-7B) ---")
     print(f"Batch Size: {BATCH_SIZE}")
     print(f"Sequence Length: {SEQ_LEN}")
-    # --- [修改开始] ---
-    # 更新精度信息
     print(f"Precision: FP16")
-    # --- [修改结束] ---
-    print("Features: Full Decoder Layer with RoPE and GQA")
+    print("Features: Full Decoder Layer with RoPE, GQA, and QKV Bias")
     print("---")
     print(f"Average Latency: {avg_latency:.3f} ms")
     print(f"Tokens per Second (Throughput): {throughput:.2f} tokens/sec")
-    print("--------------------------")
+    print("---------------------------------------")
 
 
 if __name__ == "__main__":
