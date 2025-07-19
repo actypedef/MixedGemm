@@ -5,12 +5,12 @@ import time
 
 # 1. 定义 Qwen2.5-7B 解码器层的结构参数
 BATCH_SIZE = 1
-SEQ_LEN = 2048
+SEQ_LEN = 4096
 # --- [修改] Qwen2.5-7B 结构参数 ---
 HIDDEN_SIZE = 5120
 NUM_ATTENTION_HEADS = 40
 NUM_KV_HEADS = 8
-FFN_HIDDEN_SIZE = 27648
+FFN_HIDDEN_SIZE = 13824
 # --- [修改结束] ---
 HEAD_DIM = HIDDEN_SIZE // NUM_ATTENTION_HEADS
 GQA_FACTOR = NUM_ATTENTION_HEADS // NUM_KV_HEADS
@@ -250,12 +250,12 @@ def benchmark(engine_plan):
 
     print("Warming up...")
     # 适当减少warmup次数以加快启动速度
-    for _ in range(100 * 16 // BATCH_SIZE):
+    for _ in range(96 * 2048 * 8 // BATCH_SIZE // SEQ_LEN):
         context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
     print("Warm-up finished.")
 
-    num_runs = 500 * 16 // BATCH_SIZE
+    num_runs = 400 * 2048 * 8 // BATCH_SIZE // SEQ_LEN
     latencies = []
     print(f"Running benchmark for {num_runs} iterations...")
     for _ in range(num_runs):

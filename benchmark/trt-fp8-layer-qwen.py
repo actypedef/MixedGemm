@@ -6,12 +6,12 @@ import traceback
 
 # 1. 定义 Qwen2.5-7B 解码器层的结构参数
 BATCH_SIZE = 1
-SEQ_LEN = 2048
+SEQ_LEN = 64
 HIDDEN_SIZE = 5120
 NUM_ATTENTION_HEADS = 40
 NUM_KV_HEADS = 8
 HEAD_DIM = HIDDEN_SIZE // NUM_ATTENTION_HEADS
-FFN_HIDDEN_SIZE = 27648
+FFN_HIDDEN_SIZE = 13824
 GQA_FACTOR = NUM_ATTENTION_HEADS // NUM_KV_HEADS 
 
 # TensorRT 日志记录器
@@ -272,12 +272,12 @@ def benchmark(engine_plan):
     context.set_tensor_address("output_hidden_state", output_tensor.data_ptr())
 
     print("Warming up...")
-    for _ in range(100 * 16 // BATCH_SIZE):
+    for _ in range(96 * 2048 * 8 // BATCH_SIZE // SEQ_LEN):
         context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
     print("Warm-up finished.")
 
-    num_runs = 500 * 16 // BATCH_SIZE
+    num_runs = 400 * 2048 * 8 // BATCH_SIZE // SEQ_LEN
     start_event = torch.cuda.Event(enable_timing=True)
     end_event = torch.cuda.Event(enable_timing=True)
 

@@ -237,12 +237,12 @@ def benchmark(engine_plan):
     context.set_tensor_address("output_hidden_state", output_tensor.data_ptr())
 
     print("Warming up...")
-    for _ in range(100 * 64 // BATCH_SIZE):
+    for _ in range(96 * 4 // BATCH_SIZE):
         context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
     print("Warm-up finished.")
 
-    num_runs = 500 * 64 // BATCH_SIZE
+    num_runs = 400 * 4 // BATCH_SIZE
     latencies = []
     print(f"Running benchmark for {num_runs} iterations...")
     for _ in range(num_runs):

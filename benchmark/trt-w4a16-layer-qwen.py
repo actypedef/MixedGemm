@@ -5,19 +5,16 @@ import time
 import traceback
 from collections import OrderedDict
 
-# ----------------------------------------------------------------
-# 1. 定义 Qwen2.5-7B 解码器层的结构参数 (GQA 配置)
-# ----------------------------------------------------------------
-BATCH_SIZE = 1
-SEQ_LEN = 2048
+BATCH_SIZE = 32
+SEQ_LEN = 64
 HIDDEN_SIZE = 5120
 NUM_ATTENTION_HEADS = 40
-NUM_KV_HEADS = 8  # GQA configuration
-FFN_HIDDEN_SIZE = 27648
+NUM_KV_HEADS = 8  
+FFN_HIDDEN_SIZE = 13824
 THETA_BASE = 1000000.0
 RMS_NORM_EPS = 1e-5
 HEAD_DIM = HIDDEN_SIZE // NUM_ATTENTION_HEADS
-GQA_FACTOR = NUM_ATTENTION_HEADS // NUM_KV_HEADS # Will be 7
+GQA_FACTOR = NUM_ATTENTION_HEADS // NUM_KV_HEADS 
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 
 # (Profiler and other functions up to build_decoder_layer_engine remain the same)
@@ -150,13 +147,9 @@ def build_decoder_layer_engine():
     q_with_rope = add_rope(network, q_reshaped, cos_cache, sin_cache, NUM_ATTENTION_HEADS)
     k_with_rope = add_rope(network, k_reshaped, cos_cache, sin_cache, NUM_KV_HEADS)
 
-    # --- [关键修正] 引入正确的 GQA 处理逻辑 ---
     def repeat_kv(kv_tensor):
-        # 如果是 MHA，直接返回
         if GQA_FACTOR == 1: 
             return kv_tensor
-        # kv_tensor shape: (B, H_kv, S, D)
-        # 使用 Concatenation 沿着 head 维度 (axis=1) 重复 GQA_FACTOR 次
         concat_layer = network.add_concatenation([kv_tensor] * GQA_FACTOR)
         concat_layer.axis = 1 # Concatenate along the head dimension
         return concat_layer.get_output(0)
@@ -164,7 +157,6 @@ def build_decoder_layer_engine():
     # 使用 repeat_kv 函数来处理 k 和 v
     k_repeated = repeat_kv(k_with_rope)
     v_repeated = repeat_kv(v_reshaped) # V 不应用RoPE, 但需要重复
-    # --- 修正结束 ---
 
     qkT = network.add_matrix_multiply(q_with_rope, trt.MatrixOperation.NONE, k_repeated, trt.MatrixOperation.TRANSPOSE).get_output(0)
     scale_factor = 1.0 / (HEAD_DIM ** 0.5)
@@ -200,7 +192,7 @@ def build_decoder_layer_engine():
     final_output.name = "output_hidden_state"
     network.mark_output(final_output)
     
-    print(f"Building TensorRT engine for Qwen2.5-7B Layer (BS={BATCH_SIZE}, GQA, W4A16)...")
+    print(f"Building TensorRT engine for Qwen2.5 Layer (BS={BATCH_SIZE}, GQA, W4A16)...")
     start_time = time.time()
     plan = builder.build_serialized_network(network, config)
     end_time = time.time()
@@ -223,10 +215,10 @@ def benchmark_and_profile(engine):
     context.set_tensor_address("input_hidden_state", input_tensor.data_ptr())
     context.set_tensor_address("output_hidden_state", output_tensor.data_ptr())
     print("Warming up...")
-    warmup_runs = 100 * 16 // BATCH_SIZE
+    warmup_runs = 96 * 2048 * 8 // BATCH_SIZE // SEQ_LEN
     for _ in range(warmup_runs): context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
-    num_runs = 500 * 16 // BATCH_SIZE
+    num_runs = 400 * 2048 * 8 // BATCH_SIZE // SEQ_LEN
     start_event = torch.cuda.Event(enable_timing=True); end_event = torch.cuda.Event(enable_timing=True)
     print(f"Running benchmark for {num_runs} iterations...")
     start_event.record()
@@ -234,7 +226,7 @@ def benchmark_and_profile(engine):
     end_event.record(); torch.cuda.synchronize()
     total_time_ms = start_event.elapsed_time(end_event); avg_latency = total_time_ms / num_runs
     throughput = (BATCH_SIZE * SEQ_LEN) / (avg_latency / 1000)
-    print("\n--- Overall Benchmark Results (Qwen2.5-7B W4A16) ---")
+    print("\n--- Overall Benchmark Results (Qwen2.5 W4A16) ---")
     print(f"Parameters: BATCH={BATCH_SIZE}, SEQ_LEN={SEQ_LEN}, GQA_FACTOR={GQA_FACTOR}")
     print(f"Average Latency: {avg_latency:.4f} ms")
     print(f"Tokens per Second (Throughput): {throughput:.2f} tokens/sec")

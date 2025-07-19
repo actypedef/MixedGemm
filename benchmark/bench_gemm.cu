@@ -22,12 +22,14 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 2048;
-    const int N = 4096;
-    const int KN = 2048;
+    const int M = 64;
+    const int N = 5120;
+    const int KN = 2432;
     const int KS = 0;
-    const int KO = 2048;
+    const int KO = 5120 - KN;
     const int block_size = 32; 
+    const int warm_up = 1600 * 2048 / M;
+    const int num_batch = 6400 * 2048 / M;
     
     ElementANormal::DataType *AN;
     ElementASensitive::DataType *AS;
@@ -202,11 +204,11 @@ int main() {
     CHECK_CUDA(cudaEventCreate(&start));
     CHECK_CUDA(cudaEventCreate(&stop));
     
-    for (int it = 0; it < 200; it ++) {
+    for (int it = 0; it < warm_up; it ++) {
         matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
     CHECK_CUDA(cudaEventRecord(start));
-    for (int it = 0; it < 400; it ++) {
+    for (int it = 0; it < num_batch; it ++) {
         matmul_host(AN_d, BN_d, AS_d, BS_d, AO_d, BO_d, M, N, KN, KS, KO, C_d, D_d, SFAN_d, SFBN_d, SFAS_d, SFBS_d, SFAO_d, SFBO_d);
     }
     CHECK_CUDA(cudaEventRecord(stop));
@@ -215,7 +217,7 @@ int main() {
     CHECK_CUDA(cudaEventElapsedTime(&milliseconds, start, stop));
     cudaMemcpy(D, D_d, M * N * sizeof(ElementD), cudaMemcpyDeviceToHost);
 
-    std::printf("GEMM completed in %.3f ms\n", milliseconds / 400);
+    std::printf("GEMM completed in %.3f ms\n", milliseconds / num_batch);
     std::cout << "mixed gemm finished." << std::endl;
     cudaFree(AN_d);
     cudaFree(BN_d);

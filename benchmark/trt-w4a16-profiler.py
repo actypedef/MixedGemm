@@ -7,8 +7,8 @@ from collections import OrderedDict
 
 # --- 配置参数 ---
 M, N, K = 64, 5120, 5120
-N_ITERATIONS = 5000
-N_WARMUP = 300
+N_ITERATIONS = 6400 * 2048 // M
+N_WARMUP = 1600 * 2048 // M
 
 # 确保N是偶数，因为我们将两个INT4值打包成一个INT8
 if N % 2 != 0:

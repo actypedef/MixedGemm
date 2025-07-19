@@ -191,11 +191,11 @@ def benchmark_and_profile(engine):
     context.set_tensor_address("output_hidden_state", output_tensor.data_ptr())
 
     print("Warming up...")
-    for _ in range(100 * 64 // BATCH_SIZE):
+    for _ in range(96 * 8 // BATCH_SIZE):
         context.execute_async_v3(stream_handle=torch.cuda.current_stream().cuda_stream)
     torch.cuda.synchronize()
 
-    num_runs = 500 * 64 // BATCH_SIZE # 减少迭代次数以便更快看到结果
+    num_runs = 400 * 8 // BATCH_SIZE # 减少迭代次数以便更快看到结果
     start_event = torch.cuda.Event(enable_timing=True); end_event = torch.cuda.Event(enable_timing=True)
     
     print(f"Running benchmark for {num_runs} iterations...")
