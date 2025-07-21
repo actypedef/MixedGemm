@@ -3,26 +3,32 @@ sys.path.append('build/')
 import torch
 import time
 import mixedgemm  
-for i in range(10):
-    M, N, K = 114, 3072, 3072
+for i in range(1):
+    M, N, K = 128, 4096, 4096
     group = 32
-    KN, KS, KO = 2560, 3072 - 128 - 2560, 128
+    KN, KS, KO = 4096 - 1024, 1024-128, 128
 
-
+    torch.manual_seed(721)
     # X = torch.ones(M, K, dtype=torch.bfloat16, device='cuda') * 1
     # X[0, 1] = -2.5
     # W = torch.ones(N, K, dtype=torch.bfloat16, device='cuda') * 0.5
     signs = (torch.randint(0, 2, (M, K), device='cuda', dtype=torch.bfloat16) * 2 - 1)
-    X = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 3
-    X[:, -KS:] = torch.rand(M, KS, dtype=torch.bfloat16, device='cuda') * 14 + 14
-    X[:, -KN:] = torch.rand(M, KN, dtype=torch.bfloat16, device='cuda') * 256 + 256
+    X = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 2
+    X[:, -KS:] = torch.rand(M, KS, dtype=torch.bfloat16, device='cuda') * 8 + 8
+    X[:, -KO:] = torch.rand(M, KO, dtype=torch.bfloat16, device='cuda') * 16 + 16
+    X[:, -16:] = torch.rand(M, 16, dtype=torch.bfloat16, device='cuda') * 32 + 32
     X = X * signs
     # X[:, -KS:] = torch.full((M, KS), float('nan'), dtype=torch.bfloat16, device='cuda')
     # X[:, -KN:] = torch.full((M, KN), float('nan'), dtype=torch.bfloat16, device='cuda')
     # X = torch.randint(-3, 3, (M, K), dtype=torch.bfloat16, device='cuda')
     # X[:, -KS:] = torch.randint(-14, 14, (M, KS), dtype=torch.bfloat16, device='cuda') * 1
     # X[:, -KN:] = torch.randint(-16, 16, (M, KN), dtype=torch.bfloat16, device='cuda') * 2
-    W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 3
+    W = torch.rand(N, K, dtype=torch.bfloat16, device='cuda') * 2
+    # torch.nn.init.kaiming_normal_(
+    #     W,
+    #     mode='fan_in',        # 'fan_in' 使前向传播时方差保持不变
+    #     nonlinearity='relu'   # 专为 ReLU 激活函数设计
+    # )
     # W = torch.randint(-3, 3, (N, K), dtype=torch.bfloat16, device='cuda') * 1
     # W = torch.eye(K, dtype=torch.bfloat16, device='cuda') * 1
     # reorder_index = torch.randperm(K, dtype=torch.int16, device='cuda')
@@ -59,7 +65,7 @@ for i in range(10):
     C = mixedgemm.matmul(AN, BN, AS, BS, AO, BO, SFAN, SFBN, SFAS, SFBS, SFAO, SFBO)
 
     # D = torch.matmul(X[:, :2560], W[:2560,:])
-    D = torch.matmul(X, WT)
+    D = torch.matmul(X.to(torch.float32), WT.to(torch.float32))
 
     # print("输出张量 C 的形状:", C.shape)
     # print("输出张量 C 的数据类型:", C.dtype)

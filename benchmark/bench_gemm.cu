@@ -22,7 +22,7 @@ using         ElementC    = cutlass::bfloat16_t;                            // E
 
 int main() {
     
-    const int M = 2048;
+    const int M = 4096;
     const int N = 4096;
     const int KN = 2048;
     const int KS = 0;
