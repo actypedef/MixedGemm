@@ -6,14 +6,14 @@ import mixedgemm
 for i in range(1):
     M, N, K = 128, 4096, 4096
     group = 32
-    KN, KS, KO = 4096 - 1024, 1024-128, 128
+    KN, KS, KO = 4096 - 2048, 2048-256, 256
 
     torch.manual_seed(721)
     # X = torch.ones(M, K, dtype=torch.bfloat16, device='cuda') * 1
     # X[0, 1] = -2.5
     # W = torch.ones(N, K, dtype=torch.bfloat16, device='cuda') * 0.5
     signs = (torch.randint(0, 2, (M, K), device='cuda', dtype=torch.bfloat16) * 2 - 1)
-    X = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 2
+    X = torch.rand(M, K, dtype=torch.bfloat16, device='cuda') * 3
     X[:, -KS:] = torch.rand(M, KS, dtype=torch.bfloat16, device='cuda') * 8 + 8
     X[:, -KO:] = torch.rand(M, KO, dtype=torch.bfloat16, device='cuda') * 16 + 16
     X[:, -16:] = torch.rand(M, 16, dtype=torch.bfloat16, device='cuda') * 32 + 32
